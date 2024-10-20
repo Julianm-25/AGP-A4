@@ -75,19 +75,19 @@ void AEnemyCharacter::TickPatrol()
 
 void AEnemyCharacter::TickEngage() const
 {
-	if (!SensedCharacter) return;
+	if (!SensedCharacter.IsValid()) return;
 
 	if (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 200.0f) // If the enemy is close enough to the detected player
 	{
 		// Melee attack implementation will go here 
 	}
-	else AIController->MoveToActor(SensedCharacter); // If not yet in melee range, move towards the detected player
+	else AIController->MoveToActor(SensedCharacter.Get()); // If not yet in melee range, move towards the detected player
 }
 
 void AEnemyCharacter::TickEvade()
 {
 	// Find the player and return if it can't find it.
-	if (!SensedCharacter) return;
+	if (!SensedCharacter.IsValid()) return;
 	
 	//UE_LOG(LogTemp, Display, TEXT("Target Location: %s"), *TargetLocation.ToString());
 	if (FVector::Distance(GetActorLocation(), TargetLocation) < PathfindingError) // If the enemy is close enough to the target location
@@ -114,8 +114,8 @@ void AEnemyCharacter::TickInvestigate() const
 
 void AEnemyCharacter::TickFollow() const
 {
-	if (!Commander) return;
-	if (FVector::Distance(GetActorLocation(), Commander->GetActorLocation()) > 500.0f) AIController->MoveToActor(Commander); // If more than 500 cm away from the Commander, move towards the commander
+	if (!Commander.IsValid()) return;
+	if (FVector::Distance(GetActorLocation(), Commander->GetActorLocation()) > 500.0f) AIController->MoveToActor(Commander.Get()); // If more than 500 cm away from the Commander, move towards the commander
 }
 
 void AEnemyCharacter::OnSensedPawn(APawn* SensedActor) // When the PawnSensingComponent senses a Pawn, if that Pawn is a Player, set SensedCharacter to that Player
@@ -130,10 +130,10 @@ void AEnemyCharacter::OnSensedPawn(APawn* SensedActor) // When the PawnSensingCo
 // Check if the PawnSensingComponent has line of sight to the sensed player
 void AEnemyCharacter::UpdateSight()
 {
-	if (!SensedCharacter) return;
+	if (!SensedCharacter.IsValid()) return;
 	if (PawnSensingComponent)
 	{
-		if (!PawnSensingComponent->HasLineOfSightTo(SensedCharacter)) // If there is no line of sight to the player, set the last known location of the player and set SensedCharacter to be a null pointer
+		if (!PawnSensingComponent->HasLineOfSightTo(SensedCharacter.Get())) // If there is no line of sight to the player, set the last known location of the player and set SensedCharacter to be a null pointer
 		{
 			LastSeenPlayerLocation = SensedCharacter->GetActorLocation(); 
 			SensedCharacter = nullptr;
@@ -189,7 +189,7 @@ void AEnemyCharacter::Communicate(float CommunicationRadius)
 					//UE_LOG(LogTemp, Display, TEXT("ADDED ENEMY TO FOLLOWERS"));
 				}
 			}
-			else if (!Enemy->Commander || !Enemy->bIsCommander) // if the detected enemy isn't a Commander or a follower
+			else if (!Enemy->Commander.IsValid() || !Enemy->bIsCommander) // if the detected enemy isn't a Commander or a follower
 			{
 				if (CurrentState == EEnemyState::Investigate && Enemy->CurrentState == EEnemyState::Patrol) // If the communicating enemy is investigating and the detected enemy is patrolling
 				{
@@ -207,20 +207,22 @@ void AEnemyCharacter::Communicate(float CommunicationRadius)
 	}
 }
 
+
+
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	UpdateSight();
 	
 	switch(CurrentState)
 	{
 	case EEnemyState::Patrol:
 		TickPatrol();
-		if (SensedCharacter)
+		if (SensedCharacter.IsValid())
 		{
-			if ((HealthComponent->GetCurrentHealthPercentage() >= 0.4f && !Commander) || bIsCommander) // If the enemy has more than 40% health and isn't a follower, or if the enemy is a Commander
+			if ((HealthComponent->GetCurrentHealthPercentage() >= 0.4f && !Commander.IsValid()) || bIsCommander) // If the enemy has more than 40% health and isn't a follower, or if the enemy is a Commander
 			{
 				//UE_LOG(LogTemp, Display, TEXT("SENSED PLAYER, SHOULD ENGAGE"));
 				bIsWaiting = false; // End any wait that is currently happening
@@ -244,14 +246,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		break;
 	case EEnemyState::Engage:
 		TickEngage();
-		if (HealthComponent->GetCurrentHealthPercentage() < 0.4f && !Commander && !bIsCommander) // Commanders and enemies following a Commander will not try to run from a player
+		if (HealthComponent->GetCurrentHealthPercentage() < 0.4f && !Commander.IsValid() && !bIsCommander) // Commanders and enemies following a Commander will not try to run from a player
 		{
 			SetRandomReachableLocationInRadius(GetNormalizedEvadeTarget() ,350.0f);
 			AIController->MoveToLocation(TargetLocation);
 			CurrentState = EEnemyState::Evade;
-		} else if (!SensedCharacter)
+		} else if (!SensedCharacter.IsValid())
 		{
-			if (Commander) // If the enemy has a Commander, go back to following it
+			if (Commander.IsValid()) // If the enemy has a Commander, go back to following it
 			{
 				CurrentState = EEnemyState::Follow;
 			}
@@ -268,14 +270,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		{
 			CurrentState = EEnemyState::Engage;
 			Communicate(300.0f);
-		} else if (!SensedCharacter) // If the enemy loses sight of the player, patrol
+		} else if (!SensedCharacter.IsValid()) // If the enemy loses sight of the player, patrol
 		{
 			CurrentState = EEnemyState::Patrol;
 		}
 		break;
 	case EEnemyState::Investigate:
 		TickInvestigate();
-		if (SensedCharacter) // If a player is detected while investigating, engage them
+		if (SensedCharacter.IsValid()) // If a player is detected while investigating, engage them
 		{
 			CurrentState = EEnemyState::Engage;
 			bIsWaiting = false;
@@ -291,11 +293,11 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		break;
 	case EEnemyState::Follow:
 		TickFollow();
-		if (SensedCharacter) // If a player is detected, engage them
+		if (SensedCharacter.IsValid()) // If a player is detected, engage them
 		{
 			CurrentState = EEnemyState::Engage;
 		}
-		else if (!Commander) // If the Commander dies and no player is detected, go back to patrolling
+		else if (!Commander.IsValid()) // If the Commander dies and no player is detected, go back to patrolling
 		{
 			CurrentState = EEnemyState::Patrol;
 		}
@@ -307,4 +309,15 @@ void AEnemyCharacter::Tick(float DeltaTime)
 void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AEnemyCharacter::DelayedDespawn()
+{
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::Despawn, DespawnTimer, false);
+}
+
+void AEnemyCharacter::Despawn()
+{
+	Destroy();
 }

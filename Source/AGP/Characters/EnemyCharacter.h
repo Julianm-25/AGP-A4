@@ -88,7 +88,7 @@ protected:
 	 * see any PlayerCharacter.
 	 */
 	UPROPERTY()
-	APlayerCharacter* SensedCharacter = nullptr;
+	TWeakObjectPtr<APlayerCharacter> SensedCharacter = nullptr;
 
 	/**
 	 * The current state of the enemy character. This determines which logic to use when executing the finite state machine
@@ -111,13 +111,16 @@ protected:
 	float WaitTimer = 0; // How long the enemy has left to wait before moving again
 	void Communicate(float CommunicationRadius); // Shares information about player location with nearby enemies
 	bool bIsCommander = false; // Indicates whether the enemy is a Commander or not
-	UPROPERTY() AEnemyCharacter* Commander = nullptr; // A pointer to the commander that this enemy is following
-	TArray<AEnemyCharacter*> Followers; // Array of enemies currently following this enemy if this enemy is a Commander
+	UPROPERTY() TWeakObjectPtr<AEnemyCharacter> Commander = nullptr; // A pointer to the commander that this enemy is following
+	TArray<TWeakObjectPtr<AEnemyCharacter>> Followers; // Array of enemies currently following this enemy if this enemy is a Commander
+	float DespawnTimer = 5.0f;
 public:	
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FVector LastSeenPlayerLocation; // The location where the enemy last saw the player
+	void DelayedDespawn();
+	void Despawn();
 private:
 	
 	UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move

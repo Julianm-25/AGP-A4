@@ -132,7 +132,7 @@ void UWeaponComponent::ServerFire_Implementation(const FVector& BulletStart, con
 
 void UWeaponComponent::MulticastFire_Implementation(const FVector& BulletStart, const FVector& HitLocation)
 {
-	UE_LOG(LogTemp, Display, TEXT("MULTICAST FIRING"));
+	//UE_LOG(LogTemp, Display, TEXT("MULTICAST FIRING"));
 	FireVisualImplementation(BulletStart, HitLocation);
 }
 

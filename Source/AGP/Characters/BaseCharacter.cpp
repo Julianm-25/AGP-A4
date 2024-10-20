@@ -2,7 +2,10 @@
 
 
 #include "BaseCharacter.h"
+
+#include "EnemyCharacter.h"
 #include "HealthComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -68,6 +71,16 @@ void ABaseCharacter::EquipWeapon(bool bEquipWeapon, const FWeaponStats& WeaponSt
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABaseCharacter::Ragdoll()
+{
+	GetCharacterMovement()->DisableMovement();
+	GetMesh()->SetSimulatePhysics(true);
+	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
+	{
+		EnemyCharacter->DelayedDespawn();
+	}
 }
 
 void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, const FWeaponStats& WeaponStats)

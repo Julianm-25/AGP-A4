@@ -3,6 +3,8 @@
 
 #include "HealthComponent.h"
 
+#include "BaseCharacter.h"
+
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -62,8 +64,13 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::OnDeath()
 {
-	UE_LOG(LogTemp, Display, TEXT("The character has died."))
+	//UE_LOG(LogTemp, Display, TEXT("The character has died."))
 	bIsDead = true;
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetOwner()))
+	{
+		//UE_LOG(LogTemp, Display, TEXT("Ragdoll should happen here"))
+		Character->Ragdoll();
+	}
 }
 
 // Called every frame
