@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/EnemyCharacter.h"
 #include "Engine/GameInstance.h"
 #include "AGPGameInstance.generated.h"
 
@@ -17,10 +18,12 @@ class AGP_API UAGPGameInstance : public UGameInstance
 public:
 
 	UClass* GetWeaponPickupClass() const;
-
+	UClass* GetEnemyCharacterClass() const;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Pickup Classes")
 	TSubclassOf<AWeaponPickup> WeaponPickupClass;
+	UPROPERTY(EditDefaultsOnly, Category="Enemy Classes")
+	TSubclassOf<AEnemyCharacter> EnemyCharacterClass;
 	
 };

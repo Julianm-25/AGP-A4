@@ -5,6 +5,7 @@
 
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -77,6 +78,7 @@ void ABaseCharacter::Ragdoll()
 {
 	GetCharacterMovement()->DisableMovement();
 	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
 	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
 	{
 		EnemyCharacter->DelayedDespawn();
