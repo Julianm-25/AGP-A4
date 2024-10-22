@@ -5,6 +5,7 @@
 
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
+#include "AGP/WaveSpawnSubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -82,6 +83,10 @@ void ABaseCharacter::Ragdoll()
 	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
 	{
 		EnemyCharacter->DelayedDespawn();
+		if (UWaveSpawnSubsystem* WaveSpawnSubsystem = GetWorld()->GetSubsystem<UWaveSpawnSubsystem>())
+		{
+			WaveSpawnSubsystem->DecrementEnemyCount();
+		}
 	}
 }
 

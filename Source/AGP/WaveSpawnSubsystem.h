@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NavigationSystem.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "WaveSpawnSubsystem.generated.h"
 
@@ -17,10 +18,12 @@ class AGP_API UWaveSpawnSubsystem : public UWorldSubsystem
 protected:
 	int32 WaveNumber = 0;
 	int32 RemainingEnemies = 0;
+	bool SpawnEnemyGroup();
 	
 private:
 	void SpawnWave();
-
+	UPROPERTY() UNavigationSystemV1* NavigationSystem;
+	
 public:
 	void DecrementEnemyCount();
 

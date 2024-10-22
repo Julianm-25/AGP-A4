@@ -9,12 +9,13 @@
   <component name="ChangeListManager">
     <list default="true" id="3648edde-75f4-478f-a471-80a85e25746a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_EnemyCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_EnemyCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameManagers/BP_AGPGameInstance.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameManagers/BP_AGPGameInstance.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/NavMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/NavMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/BaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,6 +142,7 @@
       <workItem from="1728558135536" duration="10603000" />
       <workItem from="1729385387748" duration="6296000" />
       <workItem from="1729475331545" duration="10442000" />
+      <workItem from="1729558908420" duration="6985000" />
     </task>
     <servers />
   </component>
