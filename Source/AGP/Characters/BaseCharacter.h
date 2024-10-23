@@ -21,7 +21,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool HasWeapon();
 
-	void EquipWeapon(bool bEquipWeapon, const FWeaponStats& WeaponStats = FWeaponStats());
+	void EquipWeapon(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats = FWeaponStats());
 	UFUNCTION(BlueprintImplementableEvent)
 	void EquipWeaponGraphical(bool bEquipWeapon);
 
@@ -73,7 +73,7 @@ public:
 	void Ragdoll();
 
 private:
-	void EquipWeaponImplementation(bool bEquipWeapon, const FWeaponStats& WeaponStats = FWeaponStats());
+	void EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats = FWeaponStats());
 
 	UFUNCTION(NetMulticast, Reliable) void MulticastEquipWeapon(bool bEquipWeapon);
 };

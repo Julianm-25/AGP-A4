@@ -136,11 +136,22 @@ void UWeaponComponent::MulticastFire_Implementation(const FVector& BulletStart, 
 	FireVisualImplementation(BulletStart, HitLocation);
 }
 
-void UWeaponComponent::SetWeaponStats(const FWeaponStats& WeaponInfo)
+void UWeaponComponent::SetWeaponStats(const FWeaponStats& WeaponInfo, EWeaponRarity Rarity)
 {
+	this->WeaponRarity = Rarity;
 	this->WeaponStats = WeaponInfo;
 	// Set the number of bullets to the magazine size
 	RoundsRemainingInMagazine = WeaponInfo.MagazineSize;
+}
+
+FWeaponStats UWeaponComponent::GetWeaponStats()
+{
+	return this->WeaponStats;
+}
+
+EWeaponRarity UWeaponComponent::GetWeaponRarity()
+{
+	return this->WeaponRarity;
 }
 
 bool UWeaponComponent::IsMagazineEmpty()

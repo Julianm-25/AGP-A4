@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "WeaponComponent.generated.h"
 
+enum class EWeaponRarity : uint8;
+
 UENUM(BlueprintType)
 enum class EWeaponType : uint8 {
 	Rifle,
@@ -55,8 +57,9 @@ public:
 	 * Starts the process of reloading.
 	 */
 	void Reload();
-	void SetWeaponStats(const FWeaponStats& WeaponInfo);
-
+	void SetWeaponStats(const FWeaponStats& WeaponInfo, EWeaponRarity Rarity);
+	FWeaponStats GetWeaponStats();
+	EWeaponRarity GetWeaponRarity();
 	bool IsMagazineEmpty();
 
 protected:
@@ -67,6 +70,7 @@ protected:
 	int32 RoundsRemainingInMagazine;
 	float TimeSinceLastShot;
 	bool bIsReloading = false;
+	EWeaponRarity WeaponRarity;
 
 public:	
 	// Called every frame
