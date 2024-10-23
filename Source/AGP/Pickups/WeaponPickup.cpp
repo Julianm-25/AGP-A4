@@ -28,7 +28,7 @@ void AWeaponPickup::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	//Super::OnPickupOverlap(OverlappedComponent, OtherActor, OtherComponent, OtherBodyIndex, bFromSweep, HitInfo);
 	// UE_LOG(LogTemp, Display, TEXT("Overlap event occurred on WeaponPickup"))
 
-	if (ABaseCharacter* Player = Cast<ABaseCharacter>(OtherActor))
+	if (ABaseCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
 		Player->EquipWeapon(true, WeaponStats);
 		Destroy();

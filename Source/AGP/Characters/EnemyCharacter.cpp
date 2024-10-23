@@ -73,13 +73,14 @@ void AEnemyCharacter::TickPatrol()
 	}
 }
 
-void AEnemyCharacter::TickEngage() const
+void AEnemyCharacter::TickEngage()
 {
 	if (!SensedCharacter.IsValid()) return;
 
-	if (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 200.0f) // If the enemy is close enough to the detected player
+	if (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 100.0f && TimeSinceLastAttack >= 3.0f) // If the enemy is close enough to the detected player
 	{
-		// Melee attack implementation will go here 
+		// Melee attack implementation will go here
+		StartMeleeAttack();
 	}
 	else AIController->MoveToActor(SensedCharacter.Get()); // If not yet in melee range, move towards the detected player
 }
@@ -208,6 +209,24 @@ void AEnemyCharacter::Communicate(float CommunicationRadius)
 }
 
 
+void AEnemyCharacter::StartMeleeAttack()
+{
+	if (!SensedCharacter.IsValid()) return;
+	TimeSinceLastAttack = 0;
+	UE_LOG(LogTemp, Display, TEXT("STARTING ATTACK"));
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::FinishMeleeAttack, 1, false);
+}
+
+void AEnemyCharacter::FinishMeleeAttack()
+{
+	if (!SensedCharacter.IsValid() || FVector::Distance(GetActorLocation(), SensedCharacter.Get()->GetActorLocation()) > 100.0f) return;
+	if (UHealthComponent* HitCharacterHealth = SensedCharacter.Get()->GetComponentByClass<UHealthComponent>())
+	{
+		HitCharacterHealth->ApplyDamage(10); // Arbitrary damage value
+		UE_LOG(LogTemp, Display, TEXT("FINISHING ATTACK"));
+	}
+}
 
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
@@ -215,7 +234,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	UpdateSight();
-	
+	TimeSinceLastAttack += GetWorld()->DeltaTimeSeconds;
 	switch(CurrentState)
 	{
 	case EEnemyState::Patrol:
@@ -232,7 +251,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 				{
 					for (auto Follower : Followers)
 					{
-						Follower->SensedCharacter = SensedCharacter;
+						Follower->SensedCharacter = SensedCharacter.Get();
 					}
 				}
 			}

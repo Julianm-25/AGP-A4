@@ -39,7 +39,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 				continue;
 			}*/
 			FVector EnemySpawnVector = EnemySpawnLocation.Location;
-			EnemySpawnVector.Z += 10;
+			EnemySpawnVector.Z += 25; // Arbitrary value to stop them from being stuck in the ground
 			GetWorld()->SpawnActor<AEnemyCharacter>(GameInstance->GetEnemyCharacterClass(), EnemySpawnVector, FRotator::ZeroRotator);
 			RemainingEnemies++;
 			UE_LOG(LogTemp, Log, TEXT("SUCCESSFUL SPAWN"))

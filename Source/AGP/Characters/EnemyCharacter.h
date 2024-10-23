@@ -50,7 +50,7 @@ protected:
 	/**
 	 * Logic that controls the enemy character when in the Engage state.
 	 */
-	void TickEngage() const;
+	void TickEngage();
 	/**
 	 * Logic that controls the enemy character when in the Evade state.
 	 */
@@ -114,6 +114,9 @@ protected:
 	UPROPERTY() TWeakObjectPtr<AEnemyCharacter> Commander = nullptr; // A pointer to the commander that this enemy is following
 	TArray<TWeakObjectPtr<AEnemyCharacter>> Followers; // Array of enemies currently following this enemy if this enemy is a Commander
 	float DespawnTimer = 5.0f;
+	void StartMeleeAttack();
+	void FinishMeleeAttack();
+	float TimeSinceLastAttack = 3.0f;
 public:	
 
 	virtual void Tick(float DeltaTime) override;

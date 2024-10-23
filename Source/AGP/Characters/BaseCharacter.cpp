@@ -5,7 +5,9 @@
 
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
+#include "AGP/AGPGameInstance.h"
 #include "AGP/WaveSpawnSubsystem.h"
+#include "AGP/Pickups/WeaponPickup.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -77,17 +79,26 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Ragdoll()
 {
-	GetCharacterMovement()->DisableMovement();
-	GetMesh()->SetSimulatePhysics(true);
-	GetCapsuleComponent()->DestroyComponent();
 	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
 	{
+		if (FMath::RandRange(1,20) == 20)
+		{
+			if (const UAGPGameInstance* GameInstance = GetWorld()->GetGameInstance<UAGPGameInstance>())
+			{
+				UE_LOG(LogTemp, Display, TEXT("WEAPON SHOULD SPAWN HERE"))
+				GetWorld()->SpawnActor<AWeaponPickup>(GameInstance->GetWeaponPickupClass(), GetActorLocation(), FRotator::ZeroRotator);
+			}
+		}
 		EnemyCharacter->DelayedDespawn();
 		if (UWaveSpawnSubsystem* WaveSpawnSubsystem = GetWorld()->GetSubsystem<UWaveSpawnSubsystem>())
 		{
 			WaveSpawnSubsystem->DecrementEnemyCount();
 		}
 	}
+	GetCharacterMovement()->DisableMovement();
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
+	
 }
 
 void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, const FWeaponStats& WeaponStats)
