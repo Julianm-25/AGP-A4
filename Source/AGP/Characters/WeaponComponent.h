@@ -83,4 +83,5 @@ private:
 	UFUNCTION(NetMulticast, Unreliable) void MulticastFire(const FVector& BulletStart, const FVector& HitLocation);
 	UFUNCTION(Server, Reliable) void ServerFire(const FVector& BulletStart, const FVector& FireAtLocation);
 	UFUNCTION(Server, Reliable) void ServerReload();
+	void BulletHitVisual(bool bHitCharacter, FVector HitLocation);
 };

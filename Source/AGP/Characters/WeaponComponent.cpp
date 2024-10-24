@@ -5,6 +5,9 @@
 
 #include "BaseCharacter.h"
 #include "HealthComponent.h"
+#include "AGP/AGPGameInstance.h"
+#include "NiagaraComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -79,7 +82,6 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 	// Now we just need to blend between these two positions based on the accuracy value.
 	FVector AccuracyAdjustedFireAt = FMath::Lerp(RandomFireAt, FireAtLocation, WeaponStats.Accuracy);
 	
-
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(GetOwner());
@@ -93,10 +95,12 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 				HitCharacterHealth->ApplyDamage(WeaponStats.BaseDamage);
 			}
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Green, false, 1.0f);
+			BulletHitVisual(true, OutHitLocation);
 		}
 		else
 		{
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Orange, false, 1.0f);
+			BulletHitVisual(false, OutHitLocation);
 		}
 		
 	}
@@ -105,7 +109,25 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		OutHitLocation = AccuracyAdjustedFireAt;
 		DrawDebugLine(GetWorld(), BulletStart, AccuracyAdjustedFireAt, FColor::Red, false, 1.0f);
 	}
-
+	if(APawn* Owner = Cast<APawn>(GetOwner()))
+	{
+		if (Owner->IsLocallyControlled())
+		{
+			if (UNiagaraComponent* MuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("MuzzleFlash"))))
+			{
+				MuzzleFlashComponent->DeactivateImmediate();
+				MuzzleFlashComponent->Activate();
+			}
+		}
+		else
+		{
+			if (UNiagaraComponent* FullBodyMuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("FullBodyMuzzleFlash"))))
+			{
+				FullBodyMuzzleFlashComponent->DeactivateImmediate();
+				FullBodyMuzzleFlashComponent->Activate();
+			}
+		}
+	}
 	TimeSinceLastShot = 0.0f;
 	RoundsRemainingInMagazine--;
 	return true;
@@ -114,6 +136,21 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation)
 {
 	DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
+}
+
+void UWeaponComponent::BulletHitVisual(bool bHitCharacter, FVector HitLocation)
+{
+	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		if (bHitCharacter)
+		{
+			GameInstance->SpawnCharacterHitParticles(HitLocation);
+		}
+		else
+		{
+			GameInstance->SpawnTerrainHitParticles(HitLocation);
+		}
+	}
 }
 
 void UWeaponComponent::ServerReload_Implementation()

@@ -7,6 +7,7 @@
 #include "PlayerCharacter.h"
 #include "Perception/PawnSensingComponent.h"
 #include "NavigationSystem.h"
+#include "AGP/AGPGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -225,6 +226,10 @@ void AEnemyCharacter::FinishMeleeAttack()
 	{
 		HitCharacterHealth->ApplyDamage(10); // Arbitrary damage value
 		UE_LOG(LogTemp, Display, TEXT("FINISHING ATTACK"));
+		if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+		{
+			GameInstance->SpawnCharacterHitParticles(SensedCharacter.Get()->GetActorLocation());
+		}
 	}
 }
 
