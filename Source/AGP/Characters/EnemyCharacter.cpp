@@ -256,7 +256,8 @@ void AEnemyCharacter::Tick(float DeltaTime)
 				{
 					for (auto Follower : Followers)
 					{
-						Follower->SensedCharacter = SensedCharacter.Get();
+						if (!Follower.IsValid()) Followers.Remove(Follower);
+						else Follower.Get()->SensedCharacter = SensedCharacter.Get();
 					}
 				}
 			}
