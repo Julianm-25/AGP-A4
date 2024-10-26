@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.h"
 #include "InputActionValue.h"
+#include "AGP/PlayerCharacterHUD.h"
 #include "PlayerCharacter.generated.h"
 
 class UInputMappingContext;
@@ -40,12 +41,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float LookSensitivity = 0.5f;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UPlayerCharacterHUD> PlayerHUDClass;
+	UPROPERTY()
+	UPlayerCharacterHUD* PlayerHUD;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void UpdateHealthBar(float HealthPercent);
+	void UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize);
+	void UpdateWaveCount(int32 Wave);
+	void UpdateEnemiesLeftCount(int32 EnemiesLeft);
 	
 private:
 	

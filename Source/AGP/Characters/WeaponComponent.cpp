@@ -8,6 +8,7 @@
 #include "AGP/AGPGameInstance.h"
 #include "NiagaraComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -53,6 +54,7 @@ void UWeaponComponent::CompleteReload()
 {
 	UE_LOG(LogTemp, Display, TEXT("Reload Complete"))
 	RoundsRemainingInMagazine = WeaponStats.MagazineSize;
+	UpdateAmmoUI();
 }
 
 bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVector& FireAtLocation,
@@ -130,6 +132,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 	}
 	TimeSinceLastShot = 0.0f;
 	RoundsRemainingInMagazine--;
+	UpdateAmmoUI();
 	return true;
 }
 
@@ -182,11 +185,19 @@ void UWeaponComponent::SetWeaponStats(const FWeaponStats& WeaponInfo)
 	this->WeaponStats = WeaponInfo;
 	// Set the number of bullets to the magazine size
 	RoundsRemainingInMagazine = WeaponInfo.MagazineSize;
+	UpdateAmmoUI();
 }
 
 bool UWeaponComponent::IsMagazineEmpty()
 {
 	return RoundsRemainingInMagazine <= 0;
+}
+
+void UWeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UWeaponComponent, RoundsRemainingInMagazine);
+	DOREPLIFETIME(UWeaponComponent, WeaponStats);
 }
 
 // Called when the game starts
@@ -198,6 +209,13 @@ void UWeaponComponent::BeginPlay()
 }
 
 
+void UWeaponComponent::UpdateAmmoUI()
+{
+	if(APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+	{
+		PlayerCharacter->UpdateAmmoUI(RoundsRemainingInMagazine, WeaponStats.MagazineSize);
+	}
+}
 
 // Called every frame
 void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

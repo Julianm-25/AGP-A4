@@ -22,7 +22,7 @@ public:
 	float Accuracy = 1.0f;
 	float FireRate = 0.2f;
 	float BaseDamage = 10.0f;
-	int32 MagazineSize = 5;
+	UPROPERTY() int32 MagazineSize = 5;
 	float ReloadTime = 1.0f;
 
 	/**
@@ -59,14 +59,18 @@ public:
 
 	bool IsMagazineEmpty();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
-	FWeaponStats WeaponStats;
-	int32 RoundsRemainingInMagazine;
+	UPROPERTY(ReplicatedUsing=UpdateAmmoUI) FWeaponStats WeaponStats;
+	UPROPERTY(ReplicatedUsing=UpdateAmmoUI) int32 RoundsRemainingInMagazine;
 	float TimeSinceLastShot;
 	bool bIsReloading = false;
+
+	UFUNCTION() void UpdateAmmoUI();
 
 public:	
 	// Called every frame

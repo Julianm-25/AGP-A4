@@ -27,6 +27,19 @@ void APlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
+
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		{
+			PlayerHUD = CreateWidget<UPlayerCharacterHUD>(PlayerController, PlayerHUDClass);
+			if (PlayerHUD)
+			{
+				PlayerHUD->AddToPlayerScreen();
+			}
+		}
+	}
+	UpdateHealthBar(1.0f);
 }
 
 // Called every frame
@@ -48,6 +61,38 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		Input->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		Input->BindAction(FireAction, ETriggerEvent::Triggered, this, &APlayerCharacter::FireWeapon);
 		Input->BindAction(ReloadAction, ETriggerEvent::Started, this, &ABaseCharacter::Reload);
+	}
+}
+
+void APlayerCharacter::UpdateHealthBar(float HealthPercent)
+{
+	if (IsLocallyControlled())
+	{
+		PlayerHUD->SetHealthBar(HealthPercent);
+	}
+}
+
+void APlayerCharacter::UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize)
+{
+	if (IsLocallyControlled())
+	{
+		PlayerHUD->SetAmmoText(RoundsRemaining, MagazineSize);
+	}
+}
+
+void APlayerCharacter::UpdateWaveCount(int32 Wave)
+{
+	if (IsLocallyControlled())
+	{
+		if(PlayerHUD) PlayerHUD->SetWaveText(Wave); // Specifically checking for PlayerHUD here to prevent it from trying to set the text before playerhud is added to the player
+	}
+}
+
+void APlayerCharacter::UpdateEnemiesLeftCount(int32 EnemiesLeft)
+{
+	if (IsLocallyControlled())
+	{
+		if(PlayerHUD) PlayerHUD->SetEnemiesLeftText(EnemiesLeft); // Specifically checking for PlayerHUD here to prevent it from trying to set the text before playerhud is added to the player
 	}
 }
 

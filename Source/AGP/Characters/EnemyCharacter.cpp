@@ -223,6 +223,7 @@ void AEnemyCharacter::StartMeleeAttack()
 
 void AEnemyCharacter::FinishMeleeAttack()
 {
+	if (!SensedCharacter.IsValid()) return;
 	if ((FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 100.0f && !bIsCommander)
 		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 200.0f && bIsCommander)) return;
 	if (UHealthComponent* HitCharacterHealth = SensedCharacter.Get()->GetComponentByClass<UHealthComponent>())

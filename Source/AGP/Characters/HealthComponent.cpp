@@ -4,6 +4,8 @@
 #include "HealthComponent.h"
 
 #include "BaseCharacter.h"
+#include "PlayerCharacter.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -39,6 +41,7 @@ void UHealthComponent::ApplyDamage(float DamageAmount)
 		OnDeath();
 		CurrentHealth = 0.0f;
 	}
+	UpdateHealthBar();
 }
 
 void UHealthComponent::ApplyHealing(float HealingAmount)
@@ -49,6 +52,14 @@ void UHealthComponent::ApplyHealing(float HealingAmount)
 	{
 		CurrentHealth = 100.0f;
 	}
+	UpdateHealthBar();
+}
+
+void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UHealthComponent, MaxHealth);
+	DOREPLIFETIME(UHealthComponent, CurrentHealth);
 }
 
 
@@ -70,6 +81,14 @@ void UHealthComponent::OnDeath()
 	{
 		//UE_LOG(LogTemp, Display, TEXT("Ragdoll should happen here"))
 		Character->Ragdoll();
+	}
+}
+
+void UHealthComponent::UpdateHealthBar()
+{
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+	{
+		Player->UpdateHealthBar(GetCurrentHealthPercentage());
 	}
 }
 
