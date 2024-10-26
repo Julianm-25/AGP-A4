@@ -78,7 +78,9 @@ void AEnemyCharacter::TickEngage()
 {
 	if (!SensedCharacter.IsValid()) return;
 
-	if (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 100.0f && TimeSinceLastAttack >= 3.0f) // If the enemy is close enough to the detected player
+	if (((FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 100.0f && !bIsCommander)
+		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 200.0f && bIsCommander))
+		&& TimeSinceLastAttack >= 3.0f) // If the enemy is close enough to the detected player
 	{
 		// Melee attack implementation will go here
 		StartMeleeAttack();
@@ -214,14 +216,15 @@ void AEnemyCharacter::StartMeleeAttack()
 {
 	if (!SensedCharacter.IsValid()) return;
 	TimeSinceLastAttack = 0;
+	AttackGraphical();
 	UE_LOG(LogTemp, Display, TEXT("STARTING ATTACK"));
-	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::FinishMeleeAttack, 1, false);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 1, false);
 }
 
 void AEnemyCharacter::FinishMeleeAttack()
 {
-	if (!SensedCharacter.IsValid() || FVector::Distance(GetActorLocation(), SensedCharacter.Get()->GetActorLocation()) > 100.0f) return;
+	if ((FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 100.0f && !bIsCommander)
+		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 200.0f && bIsCommander)) return;
 	if (UHealthComponent* HitCharacterHealth = SensedCharacter.Get()->GetComponentByClass<UHealthComponent>())
 	{
 		HitCharacterHealth->ApplyDamage(10); // Arbitrary damage value
@@ -338,6 +341,7 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AEnemyCharacter::DelayedDespawn()
 {
+	GetWorldTimerManager().ClearTimer(AttackTimer); // Fixes an issue that caused the game to crash if an enemy dies after starting an attack but before finishing it
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::Despawn, DespawnTimer, false);
 }

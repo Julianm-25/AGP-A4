@@ -136,6 +136,10 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation)
 {
 	DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
+	if (ABaseCharacter* Owner = Cast<ABaseCharacter>(GetOwner()))
+	{
+		Owner->FireWeaponGraphical();
+	}
 }
 
 void UWeaponComponent::BulletHitVisual(bool bHitCharacter, FVector HitLocation)

@@ -9,10 +9,110 @@
   <component name="ChangeListManager">
     <list default="true" id="3648edde-75f4-478f-a471-80a85e25746a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/AnimBP_FPArms.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/AnimBP_FPArms.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/AnimBP_Mannequin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/AnimBP_Mannequin.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_EnemyCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_EnemyCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Effects/MuzzleFlash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Effects/MuzzleFlash.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Effects/MuzzleFlashMaterial.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Effects/MuzzleFlashMaterial.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Levels/NavMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/NavMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/LyraContent/Mannequin/Animations/Actions/MM_Rifle_Melee.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/LyraContent/Mannequin/Animations/Actions/MM_Rifle_Melee.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/Black.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/BlackPlaceholder.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/FlatNormal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/Placeholder.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/Placeholder_Normal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/White.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSTextures/WhitePlaceholder.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSVTTextures/BlackPlaceholder.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSVTTextures/DefaultDiffuse.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSVTTextures/Placeholder_Normal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/MSVTTextures/WhitePlaceholder.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Billboard_Material/M_MS_Billboard_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Decal_Material/MF_QuixelDecalPOM.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Decal_Material/M_MS_Decal_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Decal_Material_VT/MF_QuixelDecalPOM.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Decal_Material_VT/M_MS_Decal_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material/Functions/MF_Fuzz.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material/M_MS_Default_Fuzz_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/Functions/MF_Fuzz.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Fuzz_Material_VT/M_MS_Default_Fuzz_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_DetailNormalTiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_Displacement.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_Fuzz.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_MapAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_ObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/Functions/MF_Transmission.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material/M_MS_Default_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_DetailNormalTiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Displacement.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Fuzz.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_MapAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_ObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/Functions/MF_Transmission.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Material_VT/M_MS_Default_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Transmission_Material/Functions/MF_SSSObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Transmission_Material/M_MS_Default_Transmission_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Transmission_Material_VT/Functions/MF_SSSObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Default_Transmission_Material_VT/M_MS_Default_Transmission_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Foliage_Material/Functions/MF_Translucency.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Foliage_Material/MF_Translucency.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Foliage_Material/M_MS_Foliage_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_FrameBlend.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_FrameTextures.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_Imperfection.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_Refraction.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_TranslucencyEmission.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_TranslucencyMetallic.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_WindowImperfection.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Functions/MF_WindowNormalStrength.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/MI_MS_Glass_Material_Inst.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/M_MS_Glass_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Textures/Black.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Textures/FlatNormal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Glass_Material/Textures/White.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_ImperfectionDecal_Material/M_MS_ImperfectionDecal_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_ImperfectionDecal_Material_VT/M_MS_ImperfectionDecal_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Imperfection_Material/M_MS_Imperfection_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Imperfection_Material/M_MS_Imperfection_Material_Var.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Imperfection_Material_VT/M_MS_Imperfection_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Imperfection_Material_VT/M_MS_Imperfection_Material_Var_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Imperfection_Material_Var/M_MS_Imperfection_Material_Var.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerTessellation.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Base/MF_BaseLayerTextures.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_BlendScatter.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_Displacement.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_DisplacementBlend.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_MaterialBlend.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_NormalCorrection.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/MF_ScatterLayer.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerTessellation.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Middle/MF_MiddleLayerTextures.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Puddle/MF_PuddleLayer.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerTessellation.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/LayerFunctions/Top/MF_TopLayerTextures.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_SurfaceBlend_Material/M_MS_SurfaceBlend_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Displacement.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/Functions/MF_MapAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/Functions/MF_ObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/Functions/MF_Transmission.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material/M_MS_Surface_Material.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Displacement.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_MapAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_ObjAdjustments.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Tiling.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/Functions/MF_Transmission.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/MSPresets/M_MS_Surface_Material_VT/M_MS_Surface_Material_VT.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/BaseCharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,6 +244,7 @@
       <workItem from="1729745582247" duration="3713000" />
       <workItem from="1729768472428" duration="4299000" />
       <workItem from="1729841666853" duration="2801000" />
+      <workItem from="1729898510906" duration="5006000" />
     </task>
     <servers />
   </component>
