@@ -57,6 +57,7 @@ public:
 	void UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize);
 	void UpdateWaveCount(int32 Wave);
 	void UpdateEnemiesLeftCount(int32 EnemiesLeft);
+	void PlayDamageAnimation();
 	
 private:
 	

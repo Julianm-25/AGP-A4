@@ -23,6 +23,7 @@ public:
 	void SpawnMuzzleFlashParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation);
 	void SpawnCharacterHitParticles(const FVector& SpawnLocation);
 	void SpawnTerrainHitParticles(const FVector& SpawnLocation);
+	void SpawnBulletParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation);
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Pickup Classes")
@@ -35,4 +36,6 @@ protected:
 	UNiagaraSystem* CharacterHitParticles;
 	UPROPERTY(EditDefaultsOnly, Category="Particle Systems")
 	UNiagaraSystem* TerrainHitParticles;
+	UPROPERTY(EditDefaultsOnly, Category="Particle Systems")
+	UNiagaraSystem* BulletParticles;
 };

@@ -28,4 +28,9 @@ UClass* UAGPGameInstance::GetWeaponPickupClass() const
  UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TerrainHitParticles, SpawnLocation);
  }
 
+ void UAGPGameInstance::SpawnBulletParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+ {
+ UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletParticles, SpawnLocation, SpawnRotation);
+ }
+
 

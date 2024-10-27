@@ -42,6 +42,10 @@ void UHealthComponent::ApplyDamage(float DamageAmount)
 		CurrentHealth = 0.0f;
 	}
 	UpdateHealthBar();
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+	{
+		Player->PlayDamageAnimation();
+	}
 }
 
 void UHealthComponent::ApplyHealing(float HealingAmount)
@@ -53,6 +57,7 @@ void UHealthComponent::ApplyHealing(float HealingAmount)
 		CurrentHealth = 100.0f;
 	}
 	UpdateHealthBar();
+	
 }
 
 void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

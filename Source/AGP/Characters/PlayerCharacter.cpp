@@ -96,6 +96,14 @@ void APlayerCharacter::UpdateEnemiesLeftCount(int32 EnemiesLeft)
 	}
 }
 
+void APlayerCharacter::PlayDamageAnimation()
+{
+	if (IsLocallyControlled())
+	{
+		PlayerHUD->PlayDamageAnimation();
+	}
+}
+
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();

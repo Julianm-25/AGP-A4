@@ -8,6 +8,7 @@
 #include "AGP/AGPGameInstance.h"
 #include "NiagaraComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -111,6 +112,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		OutHitLocation = AccuracyAdjustedFireAt;
 		DrawDebugLine(GetWorld(), BulletStart, AccuracyAdjustedFireAt, FColor::Red, false, 1.0f);
 	}
+	
 	if(APawn* Owner = Cast<APawn>(GetOwner()))
 	{
 		if (Owner->IsLocallyControlled())
@@ -119,6 +121,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 			{
 				MuzzleFlashComponent->DeactivateImmediate();
 				MuzzleFlashComponent->Activate();
+				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
 			}
 		}
 		else
@@ -127,6 +130,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 			{
 				FullBodyMuzzleFlashComponent->DeactivateImmediate();
 				FullBodyMuzzleFlashComponent->Activate();
+				BulletShotVisual(FullBodyMuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
 			}
 		}
 	}
@@ -157,6 +161,17 @@ void UWeaponComponent::BulletHitVisual(bool bHitCharacter, FVector HitLocation)
 		{
 			GameInstance->SpawnTerrainHitParticles(HitLocation);
 		}
+	}
+}
+
+void UWeaponComponent::BulletShotVisual(FVector BulletStart, FVector FireAtLocation)
+{
+	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		FVector BulletVector = FireAtLocation - BulletStart;
+		UKismetMathLibrary::Normal(BulletVector);
+		GameInstance->SpawnBulletParticles(BulletStart, BulletVector.Rotation());
+		UE_LOG(LogTemp, Display, TEXT("BULLET PARTICLE FIRING"));
 	}
 }
 

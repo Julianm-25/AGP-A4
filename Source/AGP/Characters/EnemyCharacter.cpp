@@ -218,7 +218,7 @@ void AEnemyCharacter::StartMeleeAttack()
 	TimeSinceLastAttack = 0;
 	AttackGraphical();
 	UE_LOG(LogTemp, Display, TEXT("STARTING ATTACK"));
-	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 1, false);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 0.75, false);
 }
 
 void AEnemyCharacter::FinishMeleeAttack()

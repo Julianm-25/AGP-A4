@@ -76,6 +76,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+
 private:
 	/**
 	 * Called after the reload has been started delayed by the weapon stats reload time.
@@ -88,4 +89,5 @@ private:
 	UFUNCTION(Server, Reliable) void ServerFire(const FVector& BulletStart, const FVector& FireAtLocation);
 	UFUNCTION(Server, Reliable) void ServerReload();
 	void BulletHitVisual(bool bHitCharacter, FVector HitLocation);
+	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation);
 };

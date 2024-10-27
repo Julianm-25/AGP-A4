@@ -22,3 +22,8 @@ void UPlayerCharacterHUD::SetEnemiesLeftText(int32 EnemiesLeft)
 {
 	if (EnemiesLeftText) EnemiesLeftText->SetText(FText::FromString("Enemies left: " + FString::FromInt(EnemiesLeft)));
 }
+
+void UPlayerCharacterHUD::PlayDamageAnimation()
+{
+	PlayAnimation(DamageAnim);
+}
