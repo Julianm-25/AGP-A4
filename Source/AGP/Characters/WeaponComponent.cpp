@@ -117,6 +117,11 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 	{
 		if (Owner->IsLocallyControlled())
 		{
+			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+			{
+				GameInstance->PlayGunshotSound2D();
+			}
+			
 			if (UNiagaraComponent* MuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("MuzzleFlash"))))
 			{
 				MuzzleFlashComponent->DeactivateImmediate();
@@ -126,6 +131,10 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		}
 		else
 		{
+			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+			{
+				GameInstance->PlayGunshotSoundAtLocation(BulletStart);
+			}
 			if (UNiagaraComponent* FullBodyMuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("FullBodyMuzzleFlash"))))
 			{
 				FullBodyMuzzleFlashComponent->DeactivateImmediate();

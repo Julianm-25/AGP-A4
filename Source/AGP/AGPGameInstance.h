@@ -5,6 +5,7 @@
 #include "NiagaraSystem.h"
 #include "Characters/EnemyCharacter.h"
 #include "Engine/GameInstance.h"
+#include "Sound/SoundCue.h"
 #include "AGPGameInstance.generated.h"
 
 class AWeaponPickup;
@@ -24,6 +25,9 @@ public:
 	void SpawnCharacterHitParticles(const FVector& SpawnLocation);
 	void SpawnTerrainHitParticles(const FVector& SpawnLocation);
 	void SpawnBulletParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	void PlayGunshotSoundAtLocation(const FVector& Location);
+	void PlayGunshotSound2D();
+	void PlayMeleeHitSoundAtLocation(const FVector& Location);
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Pickup Classes")
@@ -38,4 +42,8 @@ protected:
 	UNiagaraSystem* TerrainHitParticles;
 	UPROPERTY(EditDefaultsOnly, Category="Particle Systems")
 	UNiagaraSystem* BulletParticles;
+	UPROPERTY(EditDefaultsOnly, Category="Sound Cues")
+	USoundCue* GunshotSoundCue;
+	UPROPERTY(EditDefaultsOnly, Category="Sound Cues")
+	USoundCue* MeleeHitSoundCue;
 };

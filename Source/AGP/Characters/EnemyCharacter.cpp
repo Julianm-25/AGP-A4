@@ -233,6 +233,7 @@ void AEnemyCharacter::FinishMeleeAttack()
 		if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 		{
 			GameInstance->SpawnCharacterHitParticles(SensedCharacter.Get()->GetActorLocation());
+			GameInstance->PlayMeleeHitSoundAtLocation(SensedCharacter.Get()->GetActorLocation());
 		}
 	}
 }
