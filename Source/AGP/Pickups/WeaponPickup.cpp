@@ -30,7 +30,7 @@ void AWeaponPickup::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 	if (ABaseCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
-		Player->EquipWeapon(true, WeaponStats);
+		Player->EquipWeapon(true, WeaponRarity, WeaponStats);
 		Destroy();
 	}
 }

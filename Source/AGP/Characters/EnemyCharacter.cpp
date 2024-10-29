@@ -3,10 +3,9 @@
 
 #include "EnemyCharacter.h"
 
+#include "AIController.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.h"
-#include "Perception/PawnSensingComponent.h"
-#include "NavigationSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -14,29 +13,19 @@
 AEnemyCharacter::AEnemyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
+	//PrimaryActorTick.bCanEverTick = true;
+	//PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
 }
 
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	AIController = Cast<AAIController>(GetController());
+	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
 	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
 	{
 		bIsCommander = true;
 		SetActorScale3D(GetActorScale() * 1.5);
-	}
-	
-	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
-	
-	if (PawnSensingComponent)
-	{
-		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSensedPawn);
 	}
 }
 
@@ -117,53 +106,6 @@ void AEnemyCharacter::TickFollow() const
 {
 	if (!Commander.IsValid()) return;
 	if (FVector::Distance(GetActorLocation(), Commander->GetActorLocation()) > 500.0f) AIController->MoveToActor(Commander.Get()); // If more than 500 cm away from the Commander, move towards the commander
-}
-
-void AEnemyCharacter::OnSensedPawn(APawn* SensedActor) // When the PawnSensingComponent senses a Pawn, if that Pawn is a Player, set SensedCharacter to that Player
-{
-	if (APlayerCharacter* Player = Cast<APlayerCharacter>(SensedActor))
-	{
-		SensedCharacter = Player;
-		//UE_LOG(LogTemp, Display, TEXT("Sensed Player"))
-	}
-}
-
-// Check if the PawnSensingComponent has line of sight to the sensed player
-void AEnemyCharacter::UpdateSight()
-{
-	if (!SensedCharacter.IsValid()) return;
-	if (PawnSensingComponent)
-	{
-		if (!PawnSensingComponent->HasLineOfSightTo(SensedCharacter.Get())) // If there is no line of sight to the player, set the last known location of the player and set SensedCharacter to be a null pointer
-		{
-			LastSeenPlayerLocation = SensedCharacter->GetActorLocation(); 
-			SensedCharacter = nullptr;
-			//UE_LOG(LogTemp, Display, TEXT("Lost Player"))
-		}
-	}
-}
-
-// Sets TargetLocation to a random reachable point within a given radius around a given point
-void AEnemyCharacter::SetRandomReachableLocationInRadius(const FVector& CenterPoint, const float Radius)
-{
-	FNavLocation NavLocation;
-	NavigationSystem->GetRandomReachablePointInRadius(CenterPoint, Radius, NavLocation); // Gets a random point within the given radius in navigable space that the enemy can reach
-	TargetLocation = NavLocation.Location; // Converts the output of GetRandomReachablePointInRadius to a FVector
-
-	/*DrawDebugSphere(GetWorld(), TargetLocation, 5.0f, 8, FColor::Red, false, 5, 0, 5.0f);
-	DrawDebugSphere(GetWorld(), CenterPoint, Radius, 20, FColor::Blue, false, 0.5, 0, 5.0f);
-	UE_LOG(LogTemp, Display, TEXT("Center Point: %s"), *CenterPoint.ToString());
-	UE_LOG(LogTemp, Display, TEXT("Target Location: %s"), *TargetLocation.ToString());*/
-}
-
-// Used to find the direction away from the player when the enemy is evading
-FVector AEnemyCharacter::GetNormalizedEvadeTarget() const
-{
-	FVector2d EvadeDirection = FVector2d(SensedCharacter->GetActorLocation().X - GetActorLocation().X, SensedCharacter->GetActorLocation().Y - GetActorLocation().Y); 
-	UKismetMathLibrary::Normalize2D(EvadeDirection); // Normalizing the distance between the player and the enemy leaves us with just the direction
-	EvadeDirection *= 300.0f; // Multiplying the direction to account for the radius of GetRandomReachablePointInRadius
-	FVector2d Evade2D = FVector2d(GetActorLocation().X - EvadeDirection.X, GetActorLocation().Y - EvadeDirection.Y);
-	return FVector(Evade2D, GetActorLocation().Z); // We don't use the normalized z value as we want the enemy to stay on the same point on the z axis
 }
 
 // Shares information about player location with nearby enemies
@@ -330,13 +272,4 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AEnemyCharacter::DelayedDespawn()
-{
-	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::Despawn, DespawnTimer, false);
-}
 
-void AEnemyCharacter::Despawn()
-{
-	Destroy();
-}

@@ -10,6 +10,7 @@
 UENUM(BlueprintType)
 enum class EWeaponRarity : uint8
 {
+	None,
 	Common,
 	Rare,
 	Master,

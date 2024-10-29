@@ -5,8 +5,10 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AGP/Pickups/WeaponPickup.h"
 #include "Kismet/KismetMathLibrary.h"
 
+class AWeaponPickup;
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {

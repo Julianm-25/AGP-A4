@@ -62,11 +62,11 @@ bool ABaseCharacter::HasWeapon()
 	return (WeaponComponent != nullptr);
 }
 
-void ABaseCharacter::EquipWeapon(bool bEquipWeapon, const FWeaponStats& WeaponStats)
+void ABaseCharacter::EquipWeapon(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats)
 {
 	if (GetLocalRole() == ROLE_Authority)
 	{
-		EquipWeaponImplementation(bEquipWeapon, WeaponStats);
+		EquipWeaponImplementation(bEquipWeapon, Rarity, WeaponStats);
 		MulticastEquipWeapon(bEquipWeapon);
 	}
 }
@@ -101,7 +101,7 @@ void ABaseCharacter::Ragdoll()
 	
 }
 
-void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, const FWeaponStats& WeaponStats)
+void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats)
 {
 	// Create or remove the weapon component depending on whether we are trying to equip a weapon and we
 	// don't already have one. Or if we are trying to unequip a weapon and we do have one.
@@ -121,7 +121,7 @@ void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, const FWeaponS
 	{
 		// Set the weapons stats to the given weapon stats.
 		UE_LOG(LogTemp, Display, TEXT("Equipping weapon: \n%s"), *WeaponStats.ToString())
-		WeaponComponent->SetWeaponStats(WeaponStats);
+		WeaponComponent->SetWeaponStats(WeaponStats, Rarity);
 	}
 	
 	EquipWeaponGraphical(bEquipWeapon);
@@ -134,6 +134,7 @@ void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, const FWeaponS
 		UE_LOG(LogTemp, Display, TEXT("Player has unequipped weapon."))
 	}
 }
+
 
 void ABaseCharacter::MulticastEquipWeapon_Implementation(bool bEquipWeapon)
 {
