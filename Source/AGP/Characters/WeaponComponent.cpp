@@ -5,6 +5,11 @@
 
 #include "BaseCharacter.h"
 #include "HealthComponent.h"
+#include "AGP/AGPGameInstance.h"
+#include "NiagaraComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -50,6 +55,7 @@ void UWeaponComponent::CompleteReload()
 {
 	UE_LOG(LogTemp, Display, TEXT("Reload Complete"))
 	RoundsRemainingInMagazine = WeaponStats.MagazineSize;
+	UpdateAmmoUI();
 }
 
 bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVector& FireAtLocation,
@@ -79,7 +85,6 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 	// Now we just need to blend between these two positions based on the accuracy value.
 	FVector AccuracyAdjustedFireAt = FMath::Lerp(RandomFireAt, FireAtLocation, WeaponStats.Accuracy);
 	
-
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(GetOwner());
@@ -93,10 +98,12 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 				HitCharacterHealth->ApplyDamage(WeaponStats.BaseDamage);
 			}
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Green, false, 1.0f);
+			BulletHitVisual(true, OutHitLocation);
 		}
 		else
 		{
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Orange, false, 1.0f);
+			BulletHitVisual(false, OutHitLocation);
 		}
 		
 	}
@@ -105,15 +112,76 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		OutHitLocation = AccuracyAdjustedFireAt;
 		DrawDebugLine(GetWorld(), BulletStart, AccuracyAdjustedFireAt, FColor::Red, false, 1.0f);
 	}
-
+	
+	if(APawn* Owner = Cast<APawn>(GetOwner()))
+	{
+		if (Owner->IsLocallyControlled())
+		{
+			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+			{
+				GameInstance->PlayGunshotSound2D();
+			}
+			
+			if (UNiagaraComponent* MuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("MuzzleFlash"))))
+			{
+				MuzzleFlashComponent->DeactivateImmediate();
+				MuzzleFlashComponent->Activate();
+				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
+			}
+		}
+		else
+		{
+			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+			{
+				GameInstance->PlayGunshotSoundAtLocation(BulletStart);
+			}
+			if (UNiagaraComponent* FullBodyMuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("FullBodyMuzzleFlash"))))
+			{
+				FullBodyMuzzleFlashComponent->DeactivateImmediate();
+				FullBodyMuzzleFlashComponent->Activate();
+				BulletShotVisual(FullBodyMuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
+			}
+		}
+	}
 	TimeSinceLastShot = 0.0f;
 	RoundsRemainingInMagazine--;
+	UpdateAmmoUI();
 	return true;
 }
 
 void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation)
 {
 	DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
+	if (ABaseCharacter* Owner = Cast<ABaseCharacter>(GetOwner()))
+	{
+		Owner->FireWeaponGraphical();
+	}
+}
+
+void UWeaponComponent::BulletHitVisual(bool bHitCharacter, FVector HitLocation)
+{
+	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		if (bHitCharacter)
+		{
+			GameInstance->SpawnCharacterHitParticles(HitLocation);
+		}
+		else
+		{
+			GameInstance->SpawnTerrainHitParticles(HitLocation);
+		}
+	}
+}
+
+void UWeaponComponent::BulletShotVisual(FVector BulletStart, FVector FireAtLocation)
+{
+	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		FVector BulletVector = FireAtLocation - BulletStart;
+		UKismetMathLibrary::Normal(BulletVector);
+		GameInstance->SpawnBulletParticles(BulletStart, BulletVector.Rotation());
+		UE_LOG(LogTemp, Display, TEXT("BULLET PARTICLE FIRING"));
+	}
 }
 
 void UWeaponComponent::ServerReload_Implementation()
@@ -142,6 +210,7 @@ void UWeaponComponent::SetWeaponStats(const FWeaponStats& WeaponInfo, EWeaponRar
 	this->WeaponStats = WeaponInfo;
 	// Set the number of bullets to the magazine size
 	RoundsRemainingInMagazine = WeaponInfo.MagazineSize;
+	UpdateAmmoUI();
 }
 
 FWeaponStats UWeaponComponent::GetWeaponStats()
@@ -159,6 +228,13 @@ bool UWeaponComponent::IsMagazineEmpty()
 	return RoundsRemainingInMagazine <= 0;
 }
 
+void UWeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UWeaponComponent, RoundsRemainingInMagazine);
+	DOREPLIFETIME(UWeaponComponent, WeaponStats);
+}
+
 // Called when the game starts
 void UWeaponComponent::BeginPlay()
 {
@@ -168,6 +244,13 @@ void UWeaponComponent::BeginPlay()
 }
 
 
+void UWeaponComponent::UpdateAmmoUI()
+{
+	if(APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+	{
+		PlayerCharacter->UpdateAmmoUI(RoundsRemainingInMagazine, WeaponStats.MagazineSize);
+	}
+}
 
 // Called every frame
 void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

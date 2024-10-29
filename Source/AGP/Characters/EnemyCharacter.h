@@ -78,7 +78,15 @@ protected:
 	void StartMeleeAttack();
 	void FinishMeleeAttack();
 	float TimeSinceLastAttack = 3.0f;
+	FTimerHandle AttackTimer;
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	FVector LastSeenPlayerLocation; // The location where the enemy last saw the player
+	void DelayedDespawn();
+	void Despawn();
+	UFUNCTION(BlueprintImplementableEvent) void AttackGraphical();
+private:
+	
+	UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move
 };

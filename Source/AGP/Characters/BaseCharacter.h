@@ -64,6 +64,7 @@ protected:
 	 */
 	void Fire(const FVector& FireAtLocation);
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -71,6 +72,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Ragdoll();
+	UFUNCTION(BlueprintImplementableEvent) void FireWeaponGraphical();
 
 private:
 	void EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats = FWeaponStats());

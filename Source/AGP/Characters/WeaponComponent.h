@@ -24,7 +24,7 @@ public:
 	float Accuracy = 1.0f;
 	float FireRate = 0.2f;
 	float BaseDamage = 10.0f;
-	int32 MagazineSize = 5;
+	UPROPERTY() int32 MagazineSize = 5;
 	float ReloadTime = 1.0f;
 
 	/**
@@ -62,19 +62,24 @@ public:
 	EWeaponRarity GetWeaponRarity();
 	bool IsMagazineEmpty();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
-	FWeaponStats WeaponStats;
-	int32 RoundsRemainingInMagazine;
+	UPROPERTY(ReplicatedUsing=UpdateAmmoUI) FWeaponStats WeaponStats;
+	UPROPERTY(ReplicatedUsing=UpdateAmmoUI) int32 RoundsRemainingInMagazine;
 	float TimeSinceLastShot;
 	bool bIsReloading = false;
 	EWeaponRarity WeaponRarity;
 
+	UFUNCTION() void UpdateAmmoUI();
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 
 private:
 	/**
@@ -87,4 +92,6 @@ private:
 	UFUNCTION(NetMulticast, Unreliable) void MulticastFire(const FVector& BulletStart, const FVector& HitLocation);
 	UFUNCTION(Server, Reliable) void ServerFire(const FVector& BulletStart, const FVector& FireAtLocation);
 	UFUNCTION(Server, Reliable) void ServerReload();
+	void BulletHitVisual(bool bHitCharacter, FVector HitLocation);
+	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation);
 };

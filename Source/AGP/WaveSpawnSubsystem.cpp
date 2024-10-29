@@ -4,6 +4,7 @@
 #include "WaveSpawnSubsystem.h"
 
 #include "AGPGameInstance.h"
+#include "EngineUtils.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
@@ -52,18 +53,27 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 void UWaveSpawnSubsystem::SpawnWave()
 {
 	WaveNumber++;
+	
 	UE_LOG(LogTemp, Log, TEXT("WAVE %d"), WaveNumber)
 
 	for (int GroupNum = 0; GroupNum < WaveNumber; GroupNum++)
 	{
 		while (!SpawnEnemyGroup());
 	}
+	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
+	{
+		It->UpdateWaveCount(WaveNumber);
+		It->UpdateEnemiesLeftCount(RemainingEnemies);
+	}
 }
 
 void UWaveSpawnSubsystem::DecrementEnemyCount()
 {
 	RemainingEnemies--;
-
+	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
+	{
+		It->UpdateEnemiesLeftCount(RemainingEnemies);
+	}
 	// wait x seconds then spawn new wave
 	if (RemainingEnemies == 0)
 	{
