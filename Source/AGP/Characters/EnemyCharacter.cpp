@@ -3,10 +3,9 @@
 
 #include "EnemyCharacter.h"
 
+#include "AIController.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.h"
-#include "Perception/PawnSensingComponent.h"
-#include "NavigationSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -22,7 +21,7 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AIController = Cast<AAIController>(GetController());
+	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
 	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
 	{
 		bIsCommander = true;
@@ -106,16 +105,6 @@ void AEnemyCharacter::TickFollow() const
 {
 	if (!Commander.IsValid()) return;
 	if (FVector::Distance(GetActorLocation(), Commander->GetActorLocation()) > 500.0f) AIController->MoveToActor(Commander.Get()); // If more than 500 cm away from the Commander, move towards the commander
-}
-
-// Used to find the direction away from the player when the enemy is evading
-FVector AEnemyCharacter::GetNormalizedEvadeTarget() const
-{
-	FVector2d EvadeDirection = FVector2d(SensedCharacter->GetActorLocation().X - GetActorLocation().X, SensedCharacter->GetActorLocation().Y - GetActorLocation().Y); 
-	UKismetMathLibrary::Normalize2D(EvadeDirection); // Normalizing the distance between the player and the enemy leaves us with just the direction
-	EvadeDirection *= 300.0f; // Multiplying the direction to account for the radius of GetRandomReachablePointInRadius
-	FVector2d Evade2D = FVector2d(GetActorLocation().X - EvadeDirection.X, GetActorLocation().Y - EvadeDirection.Y);
-	return FVector(Evade2D, GetActorLocation().Z); // We don't use the normalized z value as we want the enemy to stay on the same point on the z axis
 }
 
 // Shares information about player location with nearby enemies

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseAICharacter.h"
-#include "BaseCharacter.h"
 #include "AGP/Pickups/WeaponPickup.h"
 #include "AlliedCharacter.generated.h"
 
@@ -72,11 +71,13 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	EAlliedState CurrentState = EAlliedState::Search;
-	//FVector LocationWhenPlayerLost;
-	FVector PlayerLastLocation;
 	bool bTracedSteps = true;
+	FVector WeaponLocation;
+	bool bWeaponSpotted;
+	void LookForWeapon();
 
 public:	
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 	
 };

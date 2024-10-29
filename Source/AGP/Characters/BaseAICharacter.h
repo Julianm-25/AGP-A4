@@ -6,6 +6,7 @@
 #include "BaseCharacter.h"
 #include "BaseAICharacter.generated.h"
 
+class AAIController;
 class UNavigationSystemV1;
 class APlayerCharacter;
 class UPawnSensingComponent;
@@ -59,7 +60,9 @@ protected:
 	float PathfindingError = 150.0f; // 150 cm from target by default.
 	FVector TargetLocation; // Targeted location for the enemy to move towards
 	void SetRandomReachableLocationInRadius(const FVector& CenterPoint, const float Radius); // Sets TargetLocation to a random location around a given point that the enemy can reach
+	FVector GetNormalizedEvadeTarget() const; // Used to find the direction away from the player when the enemy is evading
 	float DespawnTimer = 5.0f;
+	UPROPERTY() AAIController* AIController; // The AIController class allows the enemy to move towards given locations
 
 	bool PlayerSeen();
 	bool EnemySeen();

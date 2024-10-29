@@ -3,9 +3,11 @@
 
 #include "BaseAICharacter.h"
 
+#include "AIController.h"
 #include "EnemyCharacter.h"
 #include "NavigationSystem.h"
 #include "PlayerCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Perception/PawnSensingComponent.h"
 
 ABaseAICharacter::ABaseAICharacter()
@@ -20,10 +22,7 @@ void ABaseAICharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	//AIController = Cast<AAIController>(GetController());
-	
-	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
-	
+	AIController = Cast<AAIController>(GetController());
 	if (PawnSensingComponent)
 	{
 		PawnSensingComponent->OnSeePawn.AddDynamic(this, &ABaseAICharacter::OnSensedPawn);
@@ -40,7 +39,7 @@ void ABaseAICharacter::OnSensedPawn(APawn* SensedActor)
 	else if(AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(SensedActor))
 	{
 		SensedCharacter = Enemy;
-		UE_LOG(LogTemp, Display, TEXT("Sensed Enemy"))
+		//UE_LOG(LogTemp, Display, TEXT("Sensed Enemy"))
 	}
 }
 
@@ -50,15 +49,17 @@ void ABaseAICharacter::UpdateSight()
 	if (!SensedCharacter.IsValid()) return;
 	if (PawnSensingComponent)
 	{
+		if(APlayerCharacter* Player = Cast<APlayerCharacter>(SensedCharacter.Get()))
+		{
+			//UE_LOG(LogTemp, Display, TEXT("Player Last Seen Location Updated"))
+			LastSeenPlayerLocation = SensedCharacter->GetActorLocation(); 
+		}
 		if (!PawnSensingComponent->HasLineOfSightTo(SensedCharacter.Get())) // If there is no line of sight to the player, set the last known location of the player and set SensedCharacter to be a null pointer
 		{
-			if(APlayerCharacter* Player = Cast<APlayerCharacter>(SensedCharacter.Get()))
-			{
-				LastSeenPlayerLocation = SensedCharacter->GetActorLocation(); 
-			}
 			SensedCharacter = nullptr;
 			//UE_LOG(LogTemp, Display, TEXT("Lost Player"))
 		}
+		
 	}
 }
 
@@ -73,6 +74,15 @@ void ABaseAICharacter::SetRandomReachableLocationInRadius(const FVector& CenterP
 	DrawDebugSphere(GetWorld(), CenterPoint, Radius, 20, FColor::Blue, false, 0.5, 0, 5.0f);
 	UE_LOG(LogTemp, Display, TEXT("Center Point: %s"), *CenterPoint.ToString());
 	UE_LOG(LogTemp, Display, TEXT("Target Location: %s"), *TargetLocation.ToString());*/
+}
+
+FVector ABaseAICharacter::GetNormalizedEvadeTarget() const
+{
+	FVector2d EvadeDirection = FVector2d(SensedCharacter->GetActorLocation().X - GetActorLocation().X, SensedCharacter->GetActorLocation().Y - GetActorLocation().Y); 
+	UKismetMathLibrary::Normalize2D(EvadeDirection); // Normalizing the distance between the player and the enemy leaves us with just the direction
+	EvadeDirection *= 300.0f; // Multiplying the direction to account for the radius of GetRandomReachablePointInRadius
+	FVector2d Evade2D = FVector2d(GetActorLocation().X - EvadeDirection.X, GetActorLocation().Y - EvadeDirection.Y);
+	return FVector(Evade2D, GetActorLocation().Z); // We don't use the normalized z value as we want the enemy to stay on the same point on the z axis
 }
 
 bool ABaseAICharacter::PlayerSeen()

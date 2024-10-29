@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIController.h"
 #include "BaseAICharacter.h"
 #include "EnemyCharacter.generated.h"
 
@@ -68,9 +67,6 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere)
 	EEnemyState CurrentState = EEnemyState::Patrol;
-	
-	UPROPERTY() AAIController* AIController; // The AIController class allows the enemy to move towards given locations
-	FVector GetNormalizedEvadeTarget() const; // Used to find the direction away from the player when the enemy is evading
 	int StuckCounter = 0; // Used to stop the enemy from getting stuck for too long when moving
 	bool bIsWaiting = false; // Indicates whether the enemy is waiting before moving to the next target location
 	float WaitTimer = 0; // How long the enemy has left to wait before moving again
