@@ -88,5 +88,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent) void AttackGraphical();
 private:
 	
-	UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move
+	//UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move
 };

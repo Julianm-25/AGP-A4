@@ -158,6 +158,8 @@ void AAlliedCharacter::LookForWeapon()
 
 void AAlliedCharacter::Tick(float DeltaTime)
 {
+	if (GetLocalRole() != ROLE_Authority) return;
+	if(!AIController) return;
 	Super::Tick(DeltaTime);
 	UpdateSight();
 	if(PlayerSeen())
@@ -300,6 +302,9 @@ void AAlliedCharacter::Tick(float DeltaTime)
 
 void AAlliedCharacter::BeginPlay()
 {
+	if (GetLocalRole() != ROLE_Authority) return;
+	if(!AIController) return;
+	UE_LOG(LogTemp,Display,TEXT("Has an AIController so idk why crashing"))
 	Super::BeginPlay();
 	SetRandomReachableLocationInRadius(GetActorLocation(), 1000.0f);
 	AIController->MoveToLocation(TargetLocation);

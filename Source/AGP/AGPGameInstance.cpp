@@ -14,6 +14,11 @@ UClass* UAGPGameInstance::GetWeaponPickupClass() const
  return EnemyCharacterClass.Get();
  }
 
+ UClass* UAGPGameInstance::GetAlliedCharacterClass() const
+ {
+ return AlliedCharacterClass.Get();
+ }
+
  void UAGPGameInstance::SpawnMuzzleFlashParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation)
  {
  UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashParticles, SpawnLocation, SpawnRotation);

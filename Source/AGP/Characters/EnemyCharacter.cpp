@@ -23,6 +23,7 @@ AEnemyCharacter::AEnemyCharacter()
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
+	if (GetLocalRole() != ROLE_Authority) return;
 	Super::BeginPlay();
 	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
 	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
@@ -185,6 +186,7 @@ void AEnemyCharacter::FinishMeleeAttack()
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {
+	if (GetLocalRole() != ROLE_Authority) return;
 	Super::Tick(DeltaTime);
 	
 	UpdateSight();

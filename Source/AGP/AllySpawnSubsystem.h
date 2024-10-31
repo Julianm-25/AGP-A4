@@ -3,31 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NavigationSystem.h"
+#include "Characters/AlliedCharacter.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "WaveSpawnSubsystem.generated.h"
+#include "AllySpawnSubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AGP_API UWaveSpawnSubsystem : public UWorldSubsystem
+class AGP_API UAllySpawnSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
-
 protected:
-	int32 WaveNumber = 0;
-	int32 RemainingEnemies = 0;
-	bool SpawnEnemyGroup();
-	
+	int32 NumPlayers;
+	UPROPERTY()TArray<AAlliedCharacter*> Allies;
+	void SpawnAllies();
 private:
-	void SpawnWave();
-	UPROPERTY() UNavigationSystemV1* NavigationSystem;
-	
 public:
-	void DecrementEnemyCount();
-
+	void UpdatePlayerCount(int32 num);
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
-
 };

@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "NiagaraSystem.h"
+#include "Characters/AlliedCharacter.h"
 #include "Characters/EnemyCharacter.h"
 #include "Engine/GameInstance.h"
 #include "Sound/SoundCue.h"
@@ -21,6 +22,7 @@ public:
 
 	UClass* GetWeaponPickupClass() const;
 	UClass* GetEnemyCharacterClass() const;
+	UClass* GetAlliedCharacterClass() const;
 	void SpawnMuzzleFlashParticles(const FVector& SpawnLocation, const FRotator& SpawnRotation);
 	void SpawnCharacterHitParticles(const FVector& SpawnLocation);
 	void SpawnTerrainHitParticles(const FVector& SpawnLocation);
@@ -34,6 +36,8 @@ protected:
 	TSubclassOf<AWeaponPickup> WeaponPickupClass;
 	UPROPERTY(EditDefaultsOnly, Category="Enemy Classes")
 	TSubclassOf<AEnemyCharacter> EnemyCharacterClass;
+	UPROPERTY(EditDefaultsOnly, Category="Allied Classes")
+	TSubclassOf<AAlliedCharacter> AlliedCharacterClass;
 	UPROPERTY(EditDefaultsOnly, Category="Particle Systems")
 	UNiagaraSystem* MuzzleFlashParticles;
 	UPROPERTY(EditDefaultsOnly, Category="Particle Systems")

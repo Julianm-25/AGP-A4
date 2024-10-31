@@ -5,7 +5,9 @@
 
 #include "AGPGameInstance.h"
 #include "EngineUtils.h"
+#include "Characters/PlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 
 void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
@@ -14,13 +16,24 @@ void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	SpawnWave();
 }
 
+bool UWaveSpawnSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	if (!Super::ShouldCreateSubsystem(Outer))
+	{
+		return false;
+	}
+
+	UWorld* World = Cast<UWorld>(Outer);
+	return World->GetNetMode() < NM_Client; // will be created in standalone, dedicated servers, and listen servers
+}
+
 bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 {
 	FNavLocation GroupSpawnLocation;
 	NavigationSystem->GetRandomReachablePointInRadius(FVector(0,0,200), 10000, GroupSpawnLocation);
-	TArray<AActor*> OutActors;
 	TArray<AActor*> IgnoreActors;
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+	TArray<AActor*> OutActors;
 	TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel1));
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(),GroupSpawnLocation, 1000, TraceObjectTypes, nullptr, IgnoreActors, OutActors);
 	if (OutActors.Num() > 0) return false;
@@ -30,6 +43,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 		{
 			FNavLocation EnemySpawnLocation;
 			NavigationSystem->GetRandomReachablePointInRadius(GroupSpawnLocation, 300, EnemySpawnLocation);
+			
 			/*TArray<AActor*> OutEnemies;
 			TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 			UKismetSystemLibrary::SphereOverlapActors(GetWorld(),EnemySpawnLocation, 20, TraceObjectTypes, nullptr, IgnoreActors, OutEnemies);

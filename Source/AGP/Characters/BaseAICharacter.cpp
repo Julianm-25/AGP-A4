@@ -19,6 +19,7 @@ ABaseAICharacter::ABaseAICharacter()
 
 void ABaseAICharacter::BeginPlay()
 {
+	if (GetLocalRole() != ROLE_Authority) return;
 	Super::BeginPlay();
 	
 	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
@@ -101,6 +102,7 @@ bool ABaseAICharacter::EnemySeen()
 
 void ABaseAICharacter::Tick(float DeltaTime)
 {
+	if (GetLocalRole() != ROLE_Authority) return;
 	Super::Tick(DeltaTime);
 }
 
@@ -117,5 +119,6 @@ void ABaseAICharacter::DelayedDespawn()
 
 void ABaseAICharacter::Despawn()
 {
+	UE_LOG(LogTemp, Display, TEXT("Despawned!"))
 	Destroy();
 }
