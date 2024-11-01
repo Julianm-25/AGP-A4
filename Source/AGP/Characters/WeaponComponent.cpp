@@ -7,7 +7,7 @@
 #include "HealthComponent.h"
 #include "AGP/AGPGameInstance.h"
 #include "NiagaraComponent.h"
-#include "Engine/SkeletalMeshSocket.h"
+#include "PlayerCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -23,29 +23,16 @@ UWeaponComponent::UWeaponComponent()
 
 void UWeaponComponent::Fire(const FVector& BulletStart, const FVector& FireAtLocation)
 {
-	if(GetOwner()->GetLocalRole() == ROLE_Authority)
-	{
-		FVector HitLocation;
-		if (FireImplementation(BulletStart, FireAtLocation, HitLocation))
-		{
-			MulticastFire(BulletStart, HitLocation);
-		}
-	}
-	else if(GetOwner()->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		UE_LOG(LogTemp, Display, TEXT("TESTING"));
-		ServerFire(BulletStart, FireAtLocation);
-	}
+	ServerFire(BulletStart, FireAtLocation);
 }
 
 void UWeaponComponent::Reload()
 {
-	// Shouldn't be able to reload if you are already reloading.
-	if (bIsReloading) return;
-	
-	UE_LOG(LogTemp, Display, TEXT("Start Reload"))
-	bIsReloading = true;
-	if(GetOwner()->GetLocalRole() == ROLE_AutonomousProxy)
+	if (GetOwnerRole() == ROLE_Authority)
+	{
+		ReloadImplementation();
+	}
+	else
 	{
 		ServerReload();
 	}
@@ -59,10 +46,10 @@ void UWeaponComponent::CompleteReload()
 }
 
 bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVector& FireAtLocation,
-	FVector& OutHitLocation)
+	FVector& OutHitLocation, FString& OutHitActor, FVector& OutFireDirection)
 {
 	// Determine if the weapon is able to fire.
-	if (TimeSinceLastShot < WeaponStats.FireRate || IsMagazineEmpty())
+	if (TimeSinceLastShot < WeaponStats.FireRate || IsMagazineEmpty() || bIsReloading)
 	{
 		return false;
 	}
@@ -84,7 +71,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 	RandomFireAt += BulletStart;
 	// Now we just need to blend between these two positions based on the accuracy value.
 	FVector AccuracyAdjustedFireAt = FMath::Lerp(RandomFireAt, FireAtLocation, WeaponStats.Accuracy);
-	
+	OutFireDirection = AccuracyAdjustedFireAt;
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(GetOwner());
@@ -98,21 +85,29 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 				HitCharacterHealth->ApplyDamage(WeaponStats.BaseDamage);
 			}
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Green, false, 1.0f);
-			BulletHitVisual(true, OutHitLocation);
+			OutHitActor = "Character";
 		}
 		else
 		{
 			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Orange, false, 1.0f);
-			BulletHitVisual(false, OutHitLocation);
+			OutHitActor = "Terrain";
 		}
-		
 	}
 	else
 	{
 		OutHitLocation = AccuracyAdjustedFireAt;
 		DrawDebugLine(GetWorld(), BulletStart, AccuracyAdjustedFireAt, FColor::Red, false, 1.0f);
+		OutHitActor = "Void";
 	}
 	
+	TimeSinceLastShot = 0.0f;
+	RoundsRemainingInMagazine--;
+	UpdateAmmoUI();
+	return true;
+}
+
+void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation, const FString& HitActor, const FVector& FireDirection)
+{
 	if(APawn* Owner = Cast<APawn>(GetOwner()))
 	{
 		if (Owner->IsLocallyControlled())
@@ -126,7 +121,7 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 			{
 				MuzzleFlashComponent->DeactivateImmediate();
 				MuzzleFlashComponent->Activate();
-				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
+				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), FireDirection);
 			}
 		}
 		else
@@ -139,34 +134,29 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 			{
 				FullBodyMuzzleFlashComponent->DeactivateImmediate();
 				FullBodyMuzzleFlashComponent->Activate();
-				BulletShotVisual(FullBodyMuzzleFlashComponent->GetComponentLocation(), AccuracyAdjustedFireAt);
+				BulletShotVisual(FullBodyMuzzleFlashComponent->GetComponentLocation(), FireDirection);
 			}
 		}
 	}
-	TimeSinceLastShot = 0.0f;
-	RoundsRemainingInMagazine--;
-	UpdateAmmoUI();
-	return true;
-}
 
-void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation)
-{
-	DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
+	BulletHitVisual(HitActor, HitLocation);
+	
+	//DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
 	if (ABaseCharacter* Owner = Cast<ABaseCharacter>(GetOwner()))
 	{
 		Owner->FireWeaponGraphical();
 	}
 }
 
-void UWeaponComponent::BulletHitVisual(bool bHitCharacter, FVector HitLocation)
+void UWeaponComponent::BulletHitVisual(FString HitActor, FVector HitLocation)
 {
 	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 	{
-		if (bHitCharacter)
+		if (HitActor == "Character")
 		{
 			GameInstance->SpawnCharacterHitParticles(HitLocation);
 		}
-		else
+		else if (HitActor == "Terrain")
 		{
 			GameInstance->SpawnTerrainHitParticles(HitLocation);
 		}
@@ -180,28 +170,39 @@ void UWeaponComponent::BulletShotVisual(FVector BulletStart, FVector FireAtLocat
 		FVector BulletVector = FireAtLocation - BulletStart;
 		UKismetMathLibrary::Normal(BulletVector);
 		GameInstance->SpawnBulletParticles(BulletStart, BulletVector.Rotation());
-		UE_LOG(LogTemp, Display, TEXT("BULLET PARTICLE FIRING"));
+		//UE_LOG(LogTemp, Display, TEXT("BULLET PARTICLE FIRING"));
 	}
+}
+
+void UWeaponComponent::ReloadImplementation()
+{
+	// Shouldn't be able to reload if you are already reloading.
+	if (bIsReloading) return;
+
+	UE_LOG(LogTemp, Display, TEXT("Start Reload"))
+	bIsReloading = true;
 }
 
 void UWeaponComponent::ServerReload_Implementation()
 {
-	Reload();
+	ReloadImplementation();
 }
 
 void UWeaponComponent::ServerFire_Implementation(const FVector& BulletStart, const FVector& FireAtLocation)
 {
 	FVector HitLocation;
-	if(FireImplementation(BulletStart, FireAtLocation, HitLocation))
+	FString HitActor = "nullptr";
+	FVector FireDirection;
+	if(FireImplementation(BulletStart, FireAtLocation, HitLocation, HitActor, FireDirection))
 	{
-		MulticastFire(BulletStart, HitLocation);
+		MulticastFire(BulletStart, HitLocation, HitActor, FireDirection);
 	}
 }
 
-void UWeaponComponent::MulticastFire_Implementation(const FVector& BulletStart, const FVector& HitLocation)
+void UWeaponComponent::MulticastFire_Implementation(const FVector& BulletStart, const FVector& HitLocation, const FString& HitActor, const FVector& FireDirection)
 {
 	//UE_LOG(LogTemp, Display, TEXT("MULTICAST FIRING"));
-	FireVisualImplementation(BulletStart, HitLocation);
+	FireVisualImplementation(BulletStart, HitLocation, HitActor, FireDirection);
 }
 
 void UWeaponComponent::SetWeaponStats(const FWeaponStats& WeaponInfo, EWeaponRarity Rarity)

@@ -5,6 +5,7 @@
 
 #include "AGPGameInstance.h"
 #include "EngineUtils.h"
+#include "Characters/PlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
@@ -52,6 +53,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 
 void UWaveSpawnSubsystem::SpawnWave()
 {
+	if (GetWorld()->GetNetMode() >= NM_Client) return;
 	WaveNumber++;
 	
 	UE_LOG(LogTemp, Log, TEXT("WAVE %d"), WaveNumber)

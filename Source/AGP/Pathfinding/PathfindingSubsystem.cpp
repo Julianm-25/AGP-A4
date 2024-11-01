@@ -9,7 +9,7 @@
 void UPathfindingSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Creating the UPathfindingSubsystem."))
-	PopulateNodes();
+	//PopulateNodes();
 }
 
 TArray<FVector> UPathfindingSubsystem::GetWaypointPositions() const

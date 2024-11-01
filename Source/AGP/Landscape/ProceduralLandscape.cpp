@@ -125,12 +125,12 @@ void AProceduralLandscape::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bShouldRegenerate)
+	/*if (bShouldRegenerate)
 	{
 		ClearLandscape();
 		//CreateSimplePlane();
 		GenerateLandscape();
 		bShouldRegenerate = false;
-	}
+	}*/
 }
 

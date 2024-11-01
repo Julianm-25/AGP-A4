@@ -186,6 +186,8 @@ void AEnemyCharacter::FinishMeleeAttack()
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GetWorld()->GetNetMode() >= NM_Client) return;
 	
 	UpdateSight();
 	TimeSinceLastAttack += GetWorld()->DeltaTimeSeconds;

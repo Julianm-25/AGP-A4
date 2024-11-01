@@ -87,11 +87,13 @@ private:
 	 */
 	void CompleteReload();
 	float CurrentReloadDuration = 0.0f;
-	bool FireImplementation(const FVector& BulletStart, const FVector& FireAtLocation, FVector& OutHitLocation);
-	void FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation);
-	UFUNCTION(NetMulticast, Unreliable) void MulticastFire(const FVector& BulletStart, const FVector& HitLocation);
+	bool FireImplementation(const FVector& BulletStart, const FVector& FireAtLocation, FVector& OutHitLocation, FString& OutHitActor, FVector& OutFireDirection);
+	void FireVisualImplementation(const FVector& BulletStart, const FVector& HitLocation, const FString& HitActor, const FVector& FireDirection);
+	UFUNCTION(NetMulticast, Unreliable) void MulticastFire(const FVector& BulletStart, const FVector& HitLocation, const FString& HitActor, const FVector& FireDirection);
 	UFUNCTION(Server, Reliable) void ServerFire(const FVector& BulletStart, const FVector& FireAtLocation);
 	UFUNCTION(Server, Reliable) void ServerReload();
-	void BulletHitVisual(bool bHitCharacter, FVector HitLocation);
+	void BulletHitVisual(FString HitActor, FVector HitLocation);
 	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation);
+	void ReloadImplementation();
+
 };
