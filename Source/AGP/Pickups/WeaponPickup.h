@@ -44,8 +44,8 @@ private:
 	void GenerateWeaponPickup();
 	EWeaponRarity WeaponRarityPicker();
 	TArray<bool> WeaponStatPicker(int32 NumOfGood, int32 NumOfStats);
-	UFUNCTION(NetMulticast, Reliable) void MulticastUpdateVisual();
 
 public:
 	AWeaponPickup();
+	UFUNCTION(NetMulticast, Reliable) void MulticastUpdateVisual();
 };

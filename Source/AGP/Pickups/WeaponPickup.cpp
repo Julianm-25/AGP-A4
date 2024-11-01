@@ -30,6 +30,7 @@ void AWeaponPickup::OnPickupOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 	if (ABaseCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
+		UE_LOG(LogTemp, Display, TEXT("Rarity: %hhd"), WeaponRarity);
 		Player->EquipWeapon(true, WeaponRarity, WeaponStats);
 		Destroy();
 	}

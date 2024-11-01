@@ -3,6 +3,8 @@
 
 #include "MultiplayerGameMode.h"
 
+#include "EngineUtils.h"
+
 void AMultiplayerGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);

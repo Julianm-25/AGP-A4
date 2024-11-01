@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "Characters/PlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 
 void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
@@ -14,6 +15,21 @@ void UWaveSpawnSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	Super::OnWorldBeginPlay(InWorld);
 	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 	SpawnWave();
+}
+
+void UWaveSpawnSubsystem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UWaveSpawnSubsystem, WaveNumber);
+	DOREPLIFETIME(UWaveSpawnSubsystem, RemainingEnemies);
+}
+
+void UWaveSpawnSubsystem::UpdateEnemiesLeft()
+{
+	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
+	{
+		It->UpdateEnemiesLeftCount(RemainingEnemies);
+	}
 }
 
 bool UWaveSpawnSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -29,6 +45,7 @@ bool UWaveSpawnSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 {
+	if (GetWorld()->GetNetMode() == NM_Client) return false;
 	FNavLocation GroupSpawnLocation;
 	NavigationSystem->GetRandomReachablePointInRadius(FVector(0,0,200), 10000, GroupSpawnLocation);
 	TArray<AActor*> IgnoreActors;
@@ -59,6 +76,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 			RemainingEnemies++;
 			UE_LOG(LogTemp, Log, TEXT("SUCCESSFUL SPAWN"))
 		}
+		UpdateEnemiesLeft();
 		return true;
 	}
 	return false;	
@@ -66,6 +84,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 
 void UWaveSpawnSubsystem::SpawnWave()
 {
+	if (GetWorld()->GetNetMode() == NM_Client) return;
 	WaveNumber++;
 	
 	UE_LOG(LogTemp, Log, TEXT("WAVE %d"), WaveNumber)
@@ -84,10 +103,7 @@ void UWaveSpawnSubsystem::SpawnWave()
 void UWaveSpawnSubsystem::DecrementEnemyCount()
 {
 	RemainingEnemies--;
-	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
-	{
-		It->UpdateEnemiesLeftCount(RemainingEnemies);
-	}
+	UpdateEnemiesLeft();
 	// wait x seconds then spawn new wave
 	if (RemainingEnemies == 0)
 	{

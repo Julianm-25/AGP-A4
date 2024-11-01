@@ -16,7 +16,9 @@ class AGP_API UWaveSpawnSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(Replicated)
 	int32 WaveNumber = 0;
+	UPROPERTY(ReplicatedUsing=UpdateEnemiesLeft)
 	int32 RemainingEnemies = 0;
 	bool SpawnEnemyGroup();
 	
@@ -28,6 +30,11 @@ public:
 	void DecrementEnemyCount();
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION() void UpdateEnemiesLeft();
+	
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
 };

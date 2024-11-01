@@ -60,5 +60,5 @@ void UAllySpawnSubsystem::UpdatePlayerCount(int32 num)
 {
 	NumPlayers = num;
 	UE_LOG(LogTemp,Display,TEXT("Number of players: %i"), NumPlayers)
-	SpawnAllies();
+	//SpawnAllies();
 }

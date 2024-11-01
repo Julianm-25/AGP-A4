@@ -9,21 +9,23 @@
   <component name="ChangeListManager">
     <list default="true" id="3648edde-75f4-478f-a471-80a85e25746a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.AGP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_AlliedCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_AlliedCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacterHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_PlayerCharacterHUD.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameManagers/BP_AGPGameInstance.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameManagers/BP_AGPGameInstance.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/DamageBorder.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Effects/MuzzleFlash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Effects/MuzzleFlash.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/BP_WeaponPickup.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/BP_WeaponPickup.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/A4Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/A4Map.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Effects/MuzzleFlashMaterial.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Effects/MuzzleFlashMaterial.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Landscape/M_ProceduralLandscape.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Landscape/M_ProceduralLandscape.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Landscape/M_StoneWall.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Landscape/M_StoneWall.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Landscape/M_Tower.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Landscape/M_Tower.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/Landscape/M_Wall.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/Landscape/M_Wall.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/AGPGameInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/EnemyCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/AllySpawnSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/AllySpawnSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/HealthComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/HealthComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/PlayerCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Characters/WeaponComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/MultiplayerGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/MultiplayerGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Pathfinding/PathfindingSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Pathfinding/PathfindingSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Pickups/PickupManagerSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Pickups/PickupManagerSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Pickups/WeaponPickup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Pickups/WeaponPickup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/Pickups/WeaponPickup.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/Pickups/WeaponPickup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/AGP/WaveSpawnSubsystem.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,6 +160,7 @@
       <workItem from="1729898510906" duration="10956000" />
       <workItem from="1730001895422" duration="6087000" />
       <workItem from="1730095764644" duration="1912000" />
+      <workItem from="1730420832810" duration="15643000" />
     </task>
     <servers />
   </component>

@@ -3,6 +3,7 @@
 
 #include "PlayerCharacter.h"
 
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "AGP/Pickups/WeaponPickup.h"
@@ -42,6 +43,11 @@ void APlayerCharacter::BeginPlay()
 		}
 	}
 	UpdateHealthBar(1.0f);
+
+	for (TActorIterator<AWeaponPickup> It(GetWorld()); It; ++It)
+	{
+		It->MulticastUpdateVisual();
+	}
 }
 
 // Called every frame
