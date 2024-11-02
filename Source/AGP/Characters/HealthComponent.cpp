@@ -82,7 +82,11 @@ void UHealthComponent::OnDeath()
 {
 	//UE_LOG(LogTemp, Display, TEXT("The character has died."))
 	bIsDead = true;
-	if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetOwner()))
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+	{
+		Player->MulticastKillPlayer();
+	}
+	else if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetOwner()))
 	{
 		//UE_LOG(LogTemp, Display, TEXT("Ragdoll should happen here"))
 		Character->Ragdoll();

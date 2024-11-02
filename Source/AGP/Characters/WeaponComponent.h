@@ -95,5 +95,5 @@ private:
 	void BulletHitVisual(FString HitActor, FVector HitLocation);
 	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation);
 	void ReloadImplementation();
-
+	
 };

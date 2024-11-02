@@ -15,7 +15,7 @@ void UPlayerCharacterHUD::SetAmmoText(int32 RoundsRemaining, int32 MagazineSize)
 
 void UPlayerCharacterHUD::SetWaveText(int32 Wave)
 {
-	if (WaveText) WaveText->SetText(FText::FromString("Round " + FString::FromInt(Wave)));
+	if (WaveText) WaveText->SetText(FText::FromString("Wave " + FString::FromInt(Wave)));
 }
 
 void UPlayerCharacterHUD::SetEnemiesLeftText(int32 EnemiesLeft)
@@ -26,4 +26,18 @@ void UPlayerCharacterHUD::SetEnemiesLeftText(int32 EnemiesLeft)
 void UPlayerCharacterHUD::PlayDamageAnimation()
 {
 	PlayAnimation(DamageAnim);
+}
+
+void UPlayerCharacterHUD::ShowGameOverText()
+{
+	GameOverBox->SetRenderOpacity(1.0f);
+	EnemiesLeftText->SetRenderOpacity(0.0f);
+	WaveText->SetRenderOpacity(0.0f);
+	AmmoText->SetRenderOpacity(0.0f);
+	HealthBar->SetRenderOpacity(0.0f);
+}
+
+void UPlayerCharacterHUD::SetWaveReachedText(int32 Wave)
+{
+	if (WaveReachedText) WaveReachedText->SetText(FText::FromString("You reached wave " + FString::FromInt(Wave)));
 }

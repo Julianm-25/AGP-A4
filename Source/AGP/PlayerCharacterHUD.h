@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "PlayerCharacterHUD.generated.h"
 
 /**
@@ -23,6 +24,8 @@ protected:
 	UPROPERTY(EditAnywhere, meta=(BindWidget)) UTextBlock* WaveText;
 	UPROPERTY(EditAnywhere, meta=(BindWidget)) UTextBlock* EnemiesLeftText;
 	UPROPERTY(Transient, meta=(BindWidgetAnim)) UWidgetAnimation* DamageAnim;
+	UPROPERTY(EditAnywhere, meta=(BindWidget)) UTextBlock* WaveReachedText;
+	UPROPERTY(EditAnywhere, meta=(BindWidget)) UVerticalBox* GameOverBox;
 
 public:
 	void SetHealthBar(float HealthPercent);
@@ -30,4 +33,6 @@ public:
 	void SetWaveText(int32 Wave);
 	void SetEnemiesLeftText(int32 EnemiesLeft);
 	void PlayDamageAnimation();
+	void ShowGameOverText();
+	void SetWaveReachedText(int32 Wave);
 };

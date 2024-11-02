@@ -80,23 +80,23 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		OutHitLocation = HitResult.ImpactPoint;
 		if (ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(HitResult.GetActor()))
 		{
-			if (UHealthComponent* HitCharacterHealth = HitCharacter->GetComponentByClass<UHealthComponent>())
+			if (AEnemyCharacter* HitEnemy = Cast<AEnemyCharacter>(HitResult.GetActor())) // Only dealing damage when enemies are shot to remove friendly fire
 			{
-				HitCharacterHealth->ApplyDamage(WeaponStats.BaseDamage);
+				if (UHealthComponent* HitCharacterHealth = HitEnemy->GetComponentByClass<UHealthComponent>())
+				{
+					HitCharacterHealth->ApplyDamage(WeaponStats.BaseDamage);
+				}
 			}
-			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Green, false, 1.0f);
-			OutHitActor = "Character";
+			OutHitActor = "Character"; // Regardless of whether the shot hits a player or enemy, the blood particle effect will still play on hit
 		}
 		else
 		{
-			DrawDebugLine(GetWorld(), BulletStart, HitResult.ImpactPoint, FColor::Orange, false, 1.0f);
 			OutHitActor = "Terrain";
 		}
 	}
 	else
 	{
 		OutHitLocation = AccuracyAdjustedFireAt;
-		DrawDebugLine(GetWorld(), BulletStart, AccuracyAdjustedFireAt, FColor::Red, false, 1.0f);
 		OutHitActor = "Void";
 	}
 	

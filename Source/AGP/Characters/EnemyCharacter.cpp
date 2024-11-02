@@ -6,10 +6,6 @@
 #include "AIController.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.h"
-#include "Perception/PawnSensingComponent.h"
-#include "NavigationSystem.h"
-#include "AGP/AGPGameInstance.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -25,10 +21,9 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
-	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
+	if (GetWorld()->GetNetMode() != NM_Client)
 	{
-		bIsCommander = true;
-		SetActorScale3D(GetActorScale() * 1.5);
+		DetermineCommander();
 	}
 }
 
@@ -160,7 +155,7 @@ void AEnemyCharacter::StartMeleeAttack()
 {
 	if (!SensedCharacter.IsValid()) return;
 	TimeSinceLastAttack = 0;
-	AttackGraphical();
+	MulticastStartAttack();
 	UE_LOG(LogTemp, Display, TEXT("STARTING ATTACK"));
 	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 0.75, false);
 }
@@ -174,10 +169,9 @@ void AEnemyCharacter::FinishMeleeAttack()
 	{
 		HitCharacterHealth->ApplyDamage(10); // Arbitrary damage value
 		UE_LOG(LogTemp, Display, TEXT("FINISHING ATTACK"));
-		if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+		if (APlayerCharacter* HitPlayer = Cast<APlayerCharacter>(SensedCharacter.Get()))
 		{
-			GameInstance->SpawnCharacterHitParticles(SensedCharacter.Get()->GetActorLocation());
-			GameInstance->PlayMeleeHitSoundAtLocation(SensedCharacter.Get()->GetActorLocation());
+			HitPlayer->MulticastTakeDamage();
 		}
 	}
 }
@@ -233,6 +227,10 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			{
 				CurrentState = EEnemyState::Follow;
 			}
+			else if(LastSeenPlayerLocation == FVector::Zero()) // Avoiding issue where enemies try to investigate a player who has just been killed
+			{
+				CurrentState = EEnemyState::Patrol;
+			}
 			else // If the enemy loses sight of a player while engaged, go to the last known location of the player
 			{
 				CurrentState = EEnemyState::Investigate;
@@ -287,14 +285,21 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AEnemyCharacter::DelayedDespawn()
+void AEnemyCharacter::MulticastBecomeCommander_Implementation()
 {
-	GetWorldTimerManager().ClearTimer(AttackTimer); // Fixes an issue that caused the game to crash if an enemy dies after starting an attack but before finishing it
-	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemyCharacter::Despawn, DespawnTimer, false);
+	bIsCommander = true;
+	SetActorScale3D(GetActorScale() * 1.5);
 }
 
-void AEnemyCharacter::Despawn()
+void AEnemyCharacter::DetermineCommander()
 {
-	Destroy();
+	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
+	{
+		MulticastBecomeCommander();
+	}
+}
+
+void AEnemyCharacter::MulticastStartAttack_Implementation()
+{
+	AttackGraphical();
 }

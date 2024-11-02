@@ -5,6 +5,7 @@
 
 #include "EnemyCharacter.h"
 #include "HealthComponent.h"
+#include "PlayerCharacter.h"
 #include "AGP/AGPGameInstance.h"
 #include "AGP/WaveSpawnSubsystem.h"
 #include "AGP/Pickups/WeaponPickup.h"
@@ -81,7 +82,7 @@ void ABaseCharacter::Ragdoll()
 {
 	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
 	{
-		if (FMath::RandRange(1,20) == 20)
+		if (FMath::RandRange(1,10) == 10)
 		{
 			if (const UAGPGameInstance* GameInstance = GetWorld()->GetGameInstance<UAGPGameInstance>())
 			{
@@ -95,10 +96,7 @@ void ABaseCharacter::Ragdoll()
 			WaveSpawnSubsystem->DecrementEnemyCount();
 		}
 	}
-	GetCharacterMovement()->DisableMovement();
-	GetMesh()->SetSimulatePhysics(true);
-	GetCapsuleComponent()->DestroyComponent();
-	
+	MulticastRagdoll();
 }
 
 void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats)
@@ -133,6 +131,13 @@ void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity 
 	{
 		UE_LOG(LogTemp, Display, TEXT("Player has unequipped weapon."))
 	}
+}
+
+void ABaseCharacter::MulticastRagdoll_Implementation()
+{
+	GetCharacterMovement()->DisableMovement();
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
 }
 
 

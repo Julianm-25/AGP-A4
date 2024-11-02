@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AGP/AGPGameInstance.h"
 #include "AGP/Pickups/WeaponPickup.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -82,7 +83,7 @@ void APlayerCharacter::UpdateHealthBar(float HealthPercent)
 
 void APlayerCharacter::UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize)
 {
-	if (IsLocallyControlled())
+	if (IsLocallyControlled() && PlayerHUD)
 	{
 		PlayerHUD->SetAmmoText(RoundsRemaining, MagazineSize);
 	}
@@ -90,26 +91,52 @@ void APlayerCharacter::UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize)
 
 void APlayerCharacter::UpdateWaveCount(int32 Wave)
 {
-	if (IsLocallyControlled())
+	if (IsLocallyControlled() && PlayerHUD)
 	{
-		if(PlayerHUD) PlayerHUD->SetWaveText(Wave); // Specifically checking for PlayerHUD here to prevent it from trying to set the text before playerhud is added to the player
+		PlayerHUD->SetWaveText(Wave);
+		PlayerHUD->SetWaveReachedText(Wave);
 	}
 }
 
 void APlayerCharacter::UpdateEnemiesLeftCount(int32 EnemiesLeft)
 {
-	if (IsLocallyControlled())
+	if (IsLocallyControlled() && PlayerHUD)
 	{
-		if(PlayerHUD) PlayerHUD->SetEnemiesLeftText(EnemiesLeft); // Specifically checking for PlayerHUD here to prevent it from trying to set the text before playerhud is added to the player
+		PlayerHUD->SetEnemiesLeftText(EnemiesLeft);
 	}
 }
 
 void APlayerCharacter::PlayDamageAnimation()
 {
-	if (IsLocallyControlled())
+	if (IsLocallyControlled() && PlayerHUD)
 	{
 		PlayerHUD->PlayDamageAnimation();
 	}
+}
+
+void APlayerCharacter::MulticastUpdateWaveAndEnemies_Implementation(int32 Wave, int32 EnemiesLeft)
+{
+	UpdateWaveCount(Wave);
+	UpdateEnemiesLeftCount(EnemiesLeft);
+}
+
+void APlayerCharacter::MulticastTakeDamage_Implementation()
+{
+	PlayDamageAnimation();
+	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		GameInstance->SpawnCharacterHitParticles(GetActorLocation());
+		GameInstance->PlayMeleeHitSoundAtLocation(GetActorLocation());
+	}
+}
+
+void APlayerCharacter::MulticastKillPlayer_Implementation()
+{
+	if (IsLocallyControlled() && PlayerHUD)
+	{
+		PlayerHUD->ShowGameOverText();
+	}
+	Destroy();
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)

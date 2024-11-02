@@ -23,14 +23,14 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 	TArray<AActor*> IgnoreActors;
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
 	TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel1));
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(),GroupSpawnLocation, 1000, TraceObjectTypes, nullptr, IgnoreActors, OutActors);
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(),GroupSpawnLocation, 2000, TraceObjectTypes, nullptr, IgnoreActors, OutActors);
 	if (OutActors.Num() > 0) return false;
 	if (const UAGPGameInstance* GameInstance = GetWorld()->GetGameInstance<UAGPGameInstance>())
 	{
 		for (int EnemyNum = 0; EnemyNum < 5; EnemyNum++)
 		{
 			FNavLocation EnemySpawnLocation;
-			NavigationSystem->GetRandomReachablePointInRadius(GroupSpawnLocation, 300, EnemySpawnLocation);
+			NavigationSystem->GetRandomReachablePointInRadius(GroupSpawnLocation, 800, EnemySpawnLocation);
 			/*TArray<AActor*> OutEnemies;
 			TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 			UKismetSystemLibrary::SphereOverlapActors(GetWorld(),EnemySpawnLocation, 20, TraceObjectTypes, nullptr, IgnoreActors, OutEnemies);
@@ -41,7 +41,7 @@ bool UWaveSpawnSubsystem::SpawnEnemyGroup()
 				continue;
 			}*/
 			FVector EnemySpawnVector = EnemySpawnLocation.Location;
-			EnemySpawnVector.Z += 25; // Arbitrary value to stop them from being stuck in the ground
+			//EnemySpawnVector.Z += 25; // Arbitrary value to stop them from being stuck in the ground
 			GetWorld()->SpawnActor<AEnemyCharacter>(GameInstance->GetEnemyCharacterClass(), EnemySpawnVector, FRotator::ZeroRotator);
 			RemainingEnemies++;
 			UE_LOG(LogTemp, Log, TEXT("SUCCESSFUL SPAWN"))
@@ -62,25 +62,27 @@ void UWaveSpawnSubsystem::SpawnWave()
 	{
 		while (!SpawnEnemyGroup());
 	}
-	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
-	{
-		It->UpdateWaveCount(WaveNumber);
-		It->UpdateEnemiesLeftCount(RemainingEnemies);
-	}
+	UpdateWaveAndEnemyCount();
 }
 
 void UWaveSpawnSubsystem::DecrementEnemyCount()
 {
+	if (GetWorld()->GetNetMode() >= NM_Client) return;
 	RemainingEnemies--;
-	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
-	{
-		It->UpdateEnemiesLeftCount(RemainingEnemies);
-	}
+	UpdateWaveAndEnemyCount();
 	// wait x seconds then spawn new wave
 	if (RemainingEnemies == 0)
 	{
 		UE_LOG(LogTemp, Log, TEXT("WAVE COMPLETED"))
 		FTimerHandle TimerHandle;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UWaveSpawnSubsystem::SpawnWave, 10, false);
+	}
+}
+
+void UWaveSpawnSubsystem::UpdateWaveAndEnemyCount()
+{
+	for (TActorIterator<APlayerCharacter> It(GetWorld()); It; ++It)
+	{
+		It->MulticastUpdateWaveAndEnemies(WaveNumber, RemainingEnemies);
 	}
 }

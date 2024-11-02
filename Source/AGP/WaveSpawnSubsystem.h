@@ -17,9 +17,10 @@ class AGP_API UWaveSpawnSubsystem : public UWorldSubsystem
 
 protected:
 	int32 WaveNumber = 0;
-	int32 RemainingEnemies = 0;
+    int32 RemainingEnemies = 0;
 	bool SpawnEnemyGroup();
-	
+	void UpdateWaveAndEnemyCount();
+
 private:
 	void SpawnWave();
 	UPROPERTY() UNavigationSystemV1* NavigationSystem;
@@ -27,6 +28,7 @@ private:
 public:
 	void DecrementEnemyCount();
 
-	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+	
 };

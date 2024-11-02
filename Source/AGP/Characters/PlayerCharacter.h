@@ -58,6 +58,10 @@ public:
 	void UpdateWaveCount(int32 Wave);
 	void UpdateEnemiesLeftCount(int32 EnemiesLeft);
 	void PlayDamageAnimation();
+	UFUNCTION(NetMulticast, Reliable) void MulticastUpdateWaveAndEnemies(int32 Wave, int32 EnemiesLeft);
+	UFUNCTION(NetMulticast, Unreliable) void MulticastTakeDamage();
+
+	UFUNCTION(NetMulticast, Reliable) void MulticastKillPlayer();
 	
 private:
 	

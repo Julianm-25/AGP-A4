@@ -78,4 +78,5 @@ private:
 	void EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats = FWeaponStats());
 
 	UFUNCTION(NetMulticast, Reliable) void MulticastEquipWeapon(bool bEquipWeapon);
+	UFUNCTION(NetMulticast, Reliable) void MulticastRagdoll();
 };

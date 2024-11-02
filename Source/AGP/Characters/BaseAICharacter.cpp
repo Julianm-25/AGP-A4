@@ -5,8 +5,10 @@
 
 #include "AIController.h"
 #include "EnemyCharacter.h"
+#include "HealthComponent.h"
 #include "NavigationSystem.h"
 #include "PlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -15,6 +17,7 @@ ABaseAICharacter::ABaseAICharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
+
 }
 
 void ABaseAICharacter::BeginPlay()
@@ -23,6 +26,7 @@ void ABaseAICharacter::BeginPlay()
 	
 	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 	AIController = Cast<AAIController>(GetController());
+	GetCharacterMovement()->bUseRVOAvoidance = true;
 	if (PawnSensingComponent)
 	{
 		PawnSensingComponent->OnSeePawn.AddDynamic(this, &ABaseAICharacter::OnSensedPawn);
@@ -33,7 +37,13 @@ void ABaseAICharacter::OnSensedPawn(APawn* SensedActor)
 {
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(SensedActor))
 	{
-		SensedCharacter = Player;
+		if (UHealthComponent* SensedCharacterHealth = Player->GetComponentByClass<UHealthComponent>())
+		{
+			if (SensedCharacterHealth->GetCurrentHealthPercentage() > 0.0f)
+			{
+				SensedCharacter = Player;
+			}
+		}
 		//UE_LOG(LogTemp, Display, TEXT("Sensed Player"))
 	}
 	else if(AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(SensedActor))
