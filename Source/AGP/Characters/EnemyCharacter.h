@@ -74,20 +74,19 @@ protected:
 	bool bIsCommander = false; // Indicates whether the enemy is a Commander or not
 	UPROPERTY() TWeakObjectPtr<AEnemyCharacter> Commander = nullptr; // A pointer to the commander that this enemy is following
 	TArray<TWeakObjectPtr<AEnemyCharacter>> Followers; // Array of enemies currently following this enemy if this enemy is a Commander
-	float DespawnTimer = 5.0f;
-	void StartMeleeAttack();
-	void FinishMeleeAttack();
-	float TimeSinceLastAttack = 3.0f;
-	FTimerHandle AttackTimer;
+	void StartMeleeAttack(); // Starts the enemy melee attack
+	void FinishMeleeAttack(); // Finishes the enemy melee attack
+	float TimeSinceLastAttack = 3.0f; // Melee cooldown timer
+	FTimerHandle AttackTimer; // Handle used for the time between the start and end of the melee attack
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FVector LastSeenPlayerLocation; // The location where the enemy last saw the player
-	UFUNCTION(BlueprintImplementableEvent) void AttackGraphical();
+	UFUNCTION(BlueprintImplementableEvent) void AttackGraphical(); // Plays the melee attack animation
 private:
-	UFUNCTION(NetMulticast, Unreliable) void MulticastStartAttack();
-	void DetermineCommander();
-	UFUNCTION(NetMulticast, Reliable) void MulticastBecomeCommander();
+	UFUNCTION(NetMulticast, Unreliable) void MulticastStartAttack(); // Plays the attack animation for clients
+	void DetermineCommander(); // Determines whether an enemy becomes a commander or not
+	UFUNCTION(NetMulticast, Reliable) void MulticastBecomeCommander(); // Turns the enemy into a commander across all clients
 	//UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move
 };

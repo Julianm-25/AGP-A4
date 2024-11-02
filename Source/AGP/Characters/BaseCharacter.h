@@ -71,12 +71,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void Ragdoll();
-	UFUNCTION(BlueprintImplementableEvent) void FireWeaponGraphical();
+	void Ragdoll(); // Ragdolls the character and handles it being killed
+	UFUNCTION(BlueprintImplementableEvent) void FireWeaponGraphical(); // plays the gun fire animation in blueprints
 
 private:
 	void EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity Rarity, const FWeaponStats& WeaponStats = FWeaponStats());
 
 	UFUNCTION(NetMulticast, Reliable) void MulticastEquipWeapon(bool bEquipWeapon);
-	UFUNCTION(NetMulticast, Reliable) void MulticastRagdoll();
+	UFUNCTION(NetMulticast, Reliable) void MulticastRagdoll(); // Ragdolls the enemy across all clients
 };

@@ -61,7 +61,7 @@ protected:
 	FVector TargetLocation; // Targeted location for the enemy to move towards
 	void SetRandomReachableLocationInRadius(const FVector& CenterPoint, const float Radius); // Sets TargetLocation to a random location around a given point that the enemy can reach
 	FVector GetNormalizedEvadeTarget() const; // Used to find the direction away from the player when the enemy is evading
-	float DespawnTimer = 5.0f;
+	float DespawnTimer = 5.0f; // The time it takes for a dead character to be destroyed
 	UPROPERTY() AAIController* AIController; // The AIController class allows the enemy to move towards given locations
 
 	bool PlayerSeen();
@@ -71,8 +71,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FVector LastSeenPlayerLocation; // The location where the enemy last saw the player
-	void DelayedDespawn();
-	void Despawn();
+	void DelayedDespawn(); // Starts the character despawn timer
+	void Despawn(); // Destroys the character
 
 private:
 	UPROPERTY() UNavigationSystemV1* NavigationSystem; // The navigation system used by the enemy to determine where it can move

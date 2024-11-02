@@ -42,9 +42,9 @@ void UHealthComponent::ApplyDamage(float DamageAmount)
 		CurrentHealth = 0.0f;
 	}
 	UpdateHealthBar();
-	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner())) // If a player takes damage
 	{
-		Player->PlayDamageAnimation();
+		Player->PlayDamageAnimation(); // Play the player HUD damage animation
 	}
 }
 
@@ -57,14 +57,13 @@ void UHealthComponent::ApplyHealing(float HealingAmount)
 		CurrentHealth = 100.0f;
 	}
 	UpdateHealthBar();
-	
 }
 
 void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UHealthComponent, MaxHealth);
-	DOREPLIFETIME(UHealthComponent, CurrentHealth);
+	DOREPLIFETIME(UHealthComponent, MaxHealth); // Replicate max health 
+	DOREPLIFETIME(UHealthComponent, CurrentHealth); // and current health
 }
 
 
@@ -80,20 +79,18 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::OnDeath()
 {
-	//UE_LOG(LogTemp, Display, TEXT("The character has died."))
 	bIsDead = true;
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
 	{
-		Player->MulticastKillPlayer();
+		Player->MulticastKillPlayer(); // If a player dies, kill them across all clients
 	}
 	else if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetOwner()))
 	{
-		//UE_LOG(LogTemp, Display, TEXT("Ragdoll should happen here"))
-		Character->Ragdoll();
+		Character->Ragdoll(); // If a character dies, ragdoll them
 	}
 }
 
-void UHealthComponent::UpdateHealthBar()
+void UHealthComponent::UpdateHealthBar() // Updates the player HUD health bar based on current health percentage
 {
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
 	{

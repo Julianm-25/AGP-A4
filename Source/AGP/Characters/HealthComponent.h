@@ -34,7 +34,7 @@ protected:
 
 	void OnDeath();
 
-	UFUNCTION() void UpdateHealthBar();
+	UFUNCTION() void UpdateHealthBar(); // Updates the player HUD health bar based on current health percentage
 
 public:	
 	// Called every frame

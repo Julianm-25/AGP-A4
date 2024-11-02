@@ -26,7 +26,7 @@ void ABaseAICharacter::BeginPlay()
 	
 	NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 	AIController = Cast<AAIController>(GetController());
-	GetCharacterMovement()->bUseRVOAvoidance = true;
+	GetCharacterMovement()->bUseRVOAvoidance = true; // Helps prevent AI Characters from walking into each other
 	if (PawnSensingComponent)
 	{
 		PawnSensingComponent->OnSeePawn.AddDynamic(this, &ABaseAICharacter::OnSensedPawn);
@@ -39,7 +39,7 @@ void ABaseAICharacter::OnSensedPawn(APawn* SensedActor)
 	{
 		if (UHealthComponent* SensedCharacterHealth = Player->GetComponentByClass<UHealthComponent>())
 		{
-			if (SensedCharacterHealth->GetCurrentHealthPercentage() > 0.0f)
+			if (SensedCharacterHealth->GetCurrentHealthPercentage() > 0.0f) // Prevents enemies from registering dead players as sensed
 			{
 				SensedCharacter = Player;
 			}
@@ -61,7 +61,6 @@ void ABaseAICharacter::UpdateSight()
 	{
 		if(APlayerCharacter* Player = Cast<APlayerCharacter>(SensedCharacter.Get()))
 		{
-			//UE_LOG(LogTemp, Display, TEXT("Player Last Seen Location Updated"))
 			LastSeenPlayerLocation = SensedCharacter->GetActorLocation(); 
 		}
 		if (!PawnSensingComponent->HasLineOfSightTo(SensedCharacter.Get())) // If there is no line of sight to the player, set the last known location of the player and set SensedCharacter to be a null pointer
@@ -119,13 +118,13 @@ void ABaseAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABaseAICharacter::DelayedDespawn()
+void ABaseAICharacter::DelayedDespawn() // Starts the character despawn timer
 {
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseAICharacter::Despawn, DespawnTimer, false);
 }
 
-void ABaseAICharacter::Despawn()
+void ABaseAICharacter::Despawn() // Destroys the character
 {
 	Destroy();
 }

@@ -21,7 +21,7 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	TargetLocation = GetActorLocation(); // Starting at their Target Location means the enemy's first movement will be delayed based on the random wait time in Patrol, helping to make the movement look more random from the start
-	if (GetWorld()->GetNetMode() != NM_Client)
+	if (GetWorld()->GetNetMode() != NM_Client) // Only the server should determine which enemies are commanders
 	{
 		DetermineCommander();
 	}
@@ -65,10 +65,9 @@ void AEnemyCharacter::TickEngage()
 	if (!SensedCharacter.IsValid()) return;
 
 	if (((FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 100.0f && !bIsCommander)
-		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 200.0f && bIsCommander))
+		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) < 200.0f && bIsCommander)) // Since the commanders are larger they have a larger attack range
 		&& TimeSinceLastAttack >= 3.0f) // If the enemy is close enough to the detected player
 	{
-		// Melee attack implementation will go here
 		StartMeleeAttack();
 	}
 	else AIController->MoveToActor(SensedCharacter.Get()); // If not yet in melee range, move towards the detected player
@@ -150,28 +149,27 @@ void AEnemyCharacter::Communicate(float CommunicationRadius)
 	}
 }
 
-
+// Starts the enemy melee attack
 void AEnemyCharacter::StartMeleeAttack()
 {
 	if (!SensedCharacter.IsValid()) return;
-	TimeSinceLastAttack = 0;
-	MulticastStartAttack();
-	UE_LOG(LogTemp, Display, TEXT("STARTING ATTACK"));
-	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 0.75, false);
+	TimeSinceLastAttack = 0; // Starts the attack cooldown timer
+	MulticastStartAttack(); // Starts the attack across clients
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyCharacter::FinishMeleeAttack, 0.75, false); // Starts a 0.75 second timer to finish the attack
 }
 
+// Finishes the enemy melee attack
 void AEnemyCharacter::FinishMeleeAttack()
 {
 	if (!SensedCharacter.IsValid()) return;
 	if ((FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 100.0f && !bIsCommander)
-		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 200.0f && bIsCommander)) return;
+		|| (FVector::Distance(GetActorLocation(), SensedCharacter->GetActorLocation()) > 200.0f && bIsCommander)) return; // Cancel the attack if the player is out of range
 	if (UHealthComponent* HitCharacterHealth = SensedCharacter.Get()->GetComponentByClass<UHealthComponent>())
 	{
-		HitCharacterHealth->ApplyDamage(10); // Arbitrary damage value
-		UE_LOG(LogTemp, Display, TEXT("FINISHING ATTACK"));
+		HitCharacterHealth->ApplyDamage(10); // Deal 10 damage to the player
 		if (APlayerCharacter* HitPlayer = Cast<APlayerCharacter>(SensedCharacter.Get()))
 		{
-			HitPlayer->MulticastTakeDamage();
+			HitPlayer->MulticastTakeDamage(); // Plays the damage animation and spawns character hit particles on player
 		}
 	}
 }
@@ -181,10 +179,10 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (GetWorld()->GetNetMode() >= NM_Client) return;
+	if (GetWorld()->GetNetMode() >= NM_Client) return; // Enemy behaviour should only run on the server
 	
 	UpdateSight();
-	TimeSinceLastAttack += GetWorld()->DeltaTimeSeconds;
+	TimeSinceLastAttack += GetWorld()->DeltaTimeSeconds; // Updates the attack cooldown
 	switch(CurrentState)
 	{
 	case EEnemyState::Patrol:
@@ -285,12 +283,14 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+// Turns the enemy into a commander across all clients
 void AEnemyCharacter::MulticastBecomeCommander_Implementation()
 {
 	bIsCommander = true;
 	SetActorScale3D(GetActorScale() * 1.5);
 }
 
+// Determines whether an enemy becomes a commander or not
 void AEnemyCharacter::DetermineCommander()
 {
 	if (FMath::RandRange(1,10) == 10) // Every enemy has a 1 in 10 chance to become a Commander when spawned
@@ -299,6 +299,7 @@ void AEnemyCharacter::DetermineCommander()
 	}
 }
 
+// Plays the attack animation for clients
 void AEnemyCharacter::MulticastStartAttack_Implementation()
 {
 	AttackGraphical();

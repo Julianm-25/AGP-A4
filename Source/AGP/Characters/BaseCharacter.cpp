@@ -78,11 +78,11 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABaseCharacter::Ragdoll()
+void ABaseCharacter::Ragdoll() // Ragdolls the character and handles it being killed
 {
-	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this))
+	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(this)) // If this character is an enemy
 	{
-		if (FMath::RandRange(1,10) == 10)
+		if (FMath::RandRange(1,10) == 10) // It has a 1 in 10 chance of spawning a weapon on death
 		{
 			if (const UAGPGameInstance* GameInstance = GetWorld()->GetGameInstance<UAGPGameInstance>())
 			{
@@ -90,10 +90,10 @@ void ABaseCharacter::Ragdoll()
 				GetWorld()->SpawnActor<AWeaponPickup>(GameInstance->GetWeaponPickupClass(), GetActorLocation(), FRotator::ZeroRotator);
 			}
 		}
-		EnemyCharacter->DelayedDespawn();
+		EnemyCharacter->DelayedDespawn(); // Start the despawn timer
 		if (UWaveSpawnSubsystem* WaveSpawnSubsystem = GetWorld()->GetSubsystem<UWaveSpawnSubsystem>())
 		{
-			WaveSpawnSubsystem->DecrementEnemyCount();
+			WaveSpawnSubsystem->DecrementEnemyCount(); // Decrement the enemy count for the wave
 		}
 	}
 	MulticastRagdoll();
@@ -133,11 +133,11 @@ void ABaseCharacter::EquipWeaponImplementation(bool bEquipWeapon, EWeaponRarity 
 	}
 }
 
-void ABaseCharacter::MulticastRagdoll_Implementation()
+void ABaseCharacter::MulticastRagdoll_Implementation() // Ragdolls the enemy across all clients
 {
-	GetCharacterMovement()->DisableMovement();
-	GetMesh()->SetSimulatePhysics(true);
-	GetCapsuleComponent()->DestroyComponent();
+	GetCharacterMovement()->DisableMovement(); // Stop the character from moving
+	GetMesh()->SetSimulatePhysics(true); // Ragdoll the body
+	GetCapsuleComponent()->DestroyComponent(); // Get rid of the collision capsule
 }
 
 

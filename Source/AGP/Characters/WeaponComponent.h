@@ -92,8 +92,8 @@ private:
 	UFUNCTION(NetMulticast, Unreliable) void MulticastFire(const FVector& BulletStart, const FVector& HitLocation, const FString& HitActor, const FVector& FireDirection);
 	UFUNCTION(Server, Reliable) void ServerFire(const FVector& BulletStart, const FVector& FireAtLocation);
 	UFUNCTION(Server, Reliable) void ServerReload();
-	void BulletHitVisual(FString HitActor, FVector HitLocation);
-	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation);
+	void BulletHitVisual(FString HitActor, FVector HitLocation); // Spawns particles for where the bullet hits
+	void BulletShotVisual(FVector BulletStart, FVector FireAtLocation); // Spawns particles to show the bullet and its path
 	void ReloadImplementation();
 	
 };

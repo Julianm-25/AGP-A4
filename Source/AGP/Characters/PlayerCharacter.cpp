@@ -106,6 +106,7 @@ void APlayerCharacter::UpdateEnemiesLeftCount(int32 EnemiesLeft)
 	}
 }
 
+// Plays the HUD damage flash
 void APlayerCharacter::PlayDamageAnimation()
 {
 	if (IsLocallyControlled() && PlayerHUD)
@@ -114,12 +115,14 @@ void APlayerCharacter::PlayDamageAnimation()
 	}
 }
 
+// Update wave and enemies on all clients
 void APlayerCharacter::MulticastUpdateWaveAndEnemies_Implementation(int32 Wave, int32 EnemiesLeft)
 {
 	UpdateWaveCount(Wave);
 	UpdateEnemiesLeftCount(EnemiesLeft);
 }
 
+// Play damage animation, spawn hit particles and play hit sound across all clients
 void APlayerCharacter::MulticastTakeDamage_Implementation()
 {
 	PlayDamageAnimation();
@@ -130,11 +133,12 @@ void APlayerCharacter::MulticastTakeDamage_Implementation()
 	}
 }
 
+// Destroy the player on all clients
 void APlayerCharacter::MulticastKillPlayer_Implementation()
 {
 	if (IsLocallyControlled() && PlayerHUD)
 	{
-		PlayerHUD->ShowGameOverText();
+		PlayerHUD->ShowGameOverText(); // Reveals the Game Over text on the HUD of the killed player
 	}
 	Destroy();
 }

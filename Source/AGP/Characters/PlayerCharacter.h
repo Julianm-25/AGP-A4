@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
 #include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "AGP/PlayerCharacterHUD.h"
@@ -53,14 +52,20 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// These all update the player HUD
 	void UpdateHealthBar(float HealthPercent);
 	void UpdateAmmoUI(int32 RoundsRemaining, int32 MagazineSize);
 	void UpdateWaveCount(int32 Wave);
 	void UpdateEnemiesLeftCount(int32 EnemiesLeft);
-	void PlayDamageAnimation();
-	UFUNCTION(NetMulticast, Reliable) void MulticastUpdateWaveAndEnemies(int32 Wave, int32 EnemiesLeft);
-	UFUNCTION(NetMulticast, Unreliable) void MulticastTakeDamage();
 
+	// Plays the HUD damage flash
+	void PlayDamageAnimation();
+
+	// Update wave and enemies on all clients
+	UFUNCTION(NetMulticast, Reliable) void MulticastUpdateWaveAndEnemies(int32 Wave, int32 EnemiesLeft);
+	// Play damage animation, spawn hit particles and play hit sound across all clients
+	UFUNCTION(NetMulticast, Unreliable) void MulticastTakeDamage();
+	// Destroy the player on all clients
 	UFUNCTION(NetMulticast, Reliable) void MulticastKillPlayer();
 	
 private:

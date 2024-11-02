@@ -16,17 +16,17 @@ class AGP_API UWaveSpawnSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 protected:
-	int32 WaveNumber = 0;
-    int32 RemainingEnemies = 0;
-	bool SpawnEnemyGroup();
-	void UpdateWaveAndEnemyCount();
+	int32 WaveNumber = 0; // The current wave of enemies
+    int32 RemainingEnemies = 0; // The number of enemies remaining in the wave
+	bool SpawnEnemyGroup(); // Spawns a group of enemies at a random location in the level
+	void UpdateWaveAndEnemyCount(); // Updates the wave and enemy text on the player HUD
 
 private:
-	void SpawnWave();
-	UPROPERTY() UNavigationSystemV1* NavigationSystem;
+	void SpawnWave(); // Spawn a whole wave of enemies
+	UPROPERTY() UNavigationSystemV1* NavigationSystem; // Used to access the navmesh of the level
 	
 public:
-	void DecrementEnemyCount();
+	void DecrementEnemyCount(); // Decrements the enemy counter
 
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;

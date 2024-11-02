@@ -91,13 +91,13 @@ bool UWeaponComponent::FireImplementation(const FVector& BulletStart, const FVec
 		}
 		else
 		{
-			OutHitActor = "Terrain";
+			OutHitActor = "Terrain"; // Any other collision is considered terrain
 		}
 	}
 	else
 	{
 		OutHitLocation = AccuracyAdjustedFireAt;
-		OutHitActor = "Void";
+		OutHitActor = "Void"; // If it hits nothing, it is "Void"
 	}
 	
 	TimeSinceLastShot = 0.0f;
@@ -114,23 +114,24 @@ void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, cons
 		{
 			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 			{
-				GameInstance->PlayGunshotSound2D();
+				GameInstance->PlayGunshotSound2D(); // Play a directionless sound for the player who shot
 			}
-			
-			if (UNiagaraComponent* MuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("MuzzleFlash"))))
+			// Get the muzzle flash component on the player and activate it
+			if (UNiagaraComponent* MuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("MuzzleFlash")))) 
 			{
-				MuzzleFlashComponent->DeactivateImmediate();
+				MuzzleFlashComponent->DeactivateImmediate(); // Deactivating it before activating it so that it can activate multiple times in rapid succession
 				MuzzleFlashComponent->Activate();
-				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), FireDirection);
+				BulletShotVisual(MuzzleFlashComponent->GetComponentLocation(), FireDirection); // Spawn the bullet particle system from the muzzle in the direction of the shot 
 			}
 		}
 		else
 		{
 			if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 			{
-				GameInstance->PlayGunshotSoundAtLocation(BulletStart);
+				GameInstance->PlayGunshotSoundAtLocation(BulletStart); // Play a directional sound for all other players
 			}
-			if (UNiagaraComponent* FullBodyMuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("FullBodyMuzzleFlash"))))
+			// The muzzle is in a different position on the full body, so we need to activate the particles differently for other players
+			if (UNiagaraComponent* FullBodyMuzzleFlashComponent = Cast<UNiagaraComponent>(Owner->GetDefaultSubobjectByName(TEXT("FullBodyMuzzleFlash")))) 
 			{
 				FullBodyMuzzleFlashComponent->DeactivateImmediate();
 				FullBodyMuzzleFlashComponent->Activate();
@@ -139,38 +140,38 @@ void UWeaponComponent::FireVisualImplementation(const FVector& BulletStart, cons
 		}
 	}
 
-	BulletHitVisual(HitActor, HitLocation);
+	BulletHitVisual(HitActor, HitLocation); // Play the bullet hit particles if the bullet hit something
 	
-	//DrawDebugLine(GetWorld(), BulletStart, HitLocation, FColor::Blue, false, 1.0f);
 	if (ABaseCharacter* Owner = Cast<ABaseCharacter>(GetOwner()))
 	{
-		Owner->FireWeaponGraphical();
+		Owner->FireWeaponGraphical(); // Play the firing animation
 	}
 }
 
+// Spawns particles for where the bullet hits
 void UWeaponComponent::BulletHitVisual(FString HitActor, FVector HitLocation)
 {
 	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 	{
 		if (HitActor == "Character")
 		{
-			GameInstance->SpawnCharacterHitParticles(HitLocation);
+			GameInstance->SpawnCharacterHitParticles(HitLocation); // If it hits a character spawn character hit particles
 		}
 		else if (HitActor == "Terrain")
 		{
-			GameInstance->SpawnTerrainHitParticles(HitLocation);
+			GameInstance->SpawnTerrainHitParticles(HitLocation); // If it hits terrain spawn terrain hit particles
 		}
 	}
 }
 
+// Spawns particles to show the bullet and its path
 void UWeaponComponent::BulletShotVisual(FVector BulletStart, FVector FireAtLocation)
 {
 	if (UAGPGameInstance* GameInstance = Cast<UAGPGameInstance>(GetWorld()->GetGameInstance()))
 	{
 		FVector BulletVector = FireAtLocation - BulletStart;
-		UKismetMathLibrary::Normal(BulletVector);
-		GameInstance->SpawnBulletParticles(BulletStart, BulletVector.Rotation());
-		//UE_LOG(LogTemp, Display, TEXT("BULLET PARTICLE FIRING"));
+		UKismetMathLibrary::Normal(BulletVector); // Normalise the difference between the start of the bullet and its destination to get the direction
+		GameInstance->SpawnBulletParticles(BulletStart, BulletVector.Rotation()); // Use the direction to tell the bullet particles where to go
 	}
 }
 
@@ -232,8 +233,8 @@ bool UWeaponComponent::IsMagazineEmpty()
 void UWeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UWeaponComponent, RoundsRemainingInMagazine);
-	DOREPLIFETIME(UWeaponComponent, WeaponStats);
+	DOREPLIFETIME(UWeaponComponent, RoundsRemainingInMagazine); // Replicating ammo left in the magazine
+	DOREPLIFETIME(UWeaponComponent, WeaponStats); // and the weapon stats
 }
 
 // Called when the game starts
